@@ -30,3 +30,4 @@ The manifests in `k8s/` define:
 
 - a `Deployment` with 2 replicas, labels/selectors, port `8080`, and basic resource requests/limits.
 - a `ClusterIP` `Service` exposing port `8080` inside the cluster.
+- an `Ingress` routing HTTP traffic to the service. Replace `docker-k8s-pipeline.example.com` in `k8s/ingress.yaml` with the real domain before deploying publicly.

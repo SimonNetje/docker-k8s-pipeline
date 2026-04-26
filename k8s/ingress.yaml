@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-k8s-pipeline
+  labels:
+    app.kubernetes.io/name: docker-k8s-pipeline
+    app.kubernetes.io/component: web
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: docker-k8s-pipeline.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: docker-k8s-pipeline
+                port:
+                  name: http
