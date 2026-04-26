@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" width="140" height="140" role="img" aria-label="Concreto Hosting">
+  <title>Concreto Hosting</title>
+  <defs>
+    <pattern id="grain" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#F2F2EE"/>
+      <circle cx="1.2" cy="1.6" r="0.35" fill="#CDCDC8"/>
+      <circle cx="4.1" cy="3.4" r="0.28" fill="#9B9B96" opacity=".55"/>
+      <circle cx="2.6" cy="4.8" r="0.22" fill="#6B6B66" opacity=".35"/>
+      <circle cx="5.0" cy="0.9" r="0.18" fill="#CDCDC8"/>
+    </pattern>
+
+    <linearGradient id="leftFace" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#CDCDC8"/>
+      <stop offset="1" stop-color="#B8B8B2"/>
+    </linearGradient>
+    <linearGradient id="rightFace" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9B9B96"/>
+      <stop offset="1" stop-color="#7A7A75"/>
+    </linearGradient>
+
+    <linearGradient id="accentTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B8BFF"/>
+      <stop offset="1" stop-color="#0A6EFF"/>
+    </linearGradient>
+    <linearGradient id="accentLeft" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0A6EFF"/>
+      <stop offset="1" stop-color="#0858CC"/>
+    </linearGradient>
+    <linearGradient id="accentRight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0858CC"/>
+      <stop offset="1" stop-color="#06409A"/>
+    </linearGradient>
+
+    <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#111110" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#111110" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="70" cy="122" rx="44" ry="6" fill="url(#shadow)"/>
+
+  <!--
+    Slab geometry (relative to its translate y0):
+    Top diamond corners: top(70,y0)  right(110,y0+11)  bottom(70,y0+22)  left(30,y0+11)
+    Side thickness h=10, so bottom-front corner is (70, y0+32)
+    left side face:  30,y0+11 → 70,y0+22 → 70,y0+32 → 30,y0+21
+    right side face: 110,y0+11 → 70,y0+22 → 70,y0+32 → 110,y0+21
+  -->
+
+  <!-- ===== BOTTOM SLAB ===== -->
+  <g transform="translate(0,80)">
+    <path d="M30,11 L70,22 L70,32 L30,21 Z" fill="url(#leftFace)"/>
+    <path d="M110,11 L70,22 L70,32 L110,21 Z" fill="url(#rightFace)"/>
+    <path d="M70,0 L110,11 L70,22 L30,11 Z" fill="url(#grain)" stroke="#B8B8B2" stroke-width="0.6"/>
+    <g fill="#3A3A36" opacity=".55">
+      <path d="M82,25 L102,20 L102,21.2 L82,26.2 Z"/>
+      <path d="M82,28 L102,23 L102,24.2 L82,29.2 Z"/>
+    </g>
+    <circle cx="44" cy="15" r="1.6" fill="#16A349"/>
+  </g>
+
+  <!-- ===== MIDDLE SLAB ===== -->
+  <g transform="translate(0,56)">
+    <path d="M30,11 L70,22 L70,32 L30,21 Z" fill="url(#leftFace)"/>
+    <path d="M110,11 L70,22 L70,32 L110,21 Z" fill="url(#rightFace)"/>
+    <path d="M70,0 L110,11 L70,22 L30,11 Z" fill="url(#grain)" stroke="#B8B8B2" stroke-width="0.6"/>
+    <g fill="#3A3A36" opacity=".55">
+      <path d="M82,25 L102,20 L102,21.2 L82,26.2 Z"/>
+      <path d="M82,28 L102,23 L102,24.2 L82,29.2 Z"/>
+    </g>
+    <circle cx="44" cy="15" r="1.6" fill="#16A349"/>
+  </g>
+
+  <!-- ===== TOP SLAB (accent) ===== -->
+  <g transform="translate(0,32)">
+    <path d="M30,11 L70,22 L70,32 L30,21 Z" fill="url(#accentLeft)"/>
+    <path d="M110,11 L70,22 L70,32 L110,21 Z" fill="url(#accentRight)"/>
+    <path d="M70,0 L110,11 L70,22 L30,11 Z" fill="url(#accentTop)" stroke="#0858CC" stroke-width="0.6"/>
+    <path d="M70,1.2 L108.5,11 L70,20.8 L31.5,11 Z" fill="none" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="0.6"/>
+    <g fill="#FFFFFF" opacity=".4">
+      <path d="M82,25 L102,20 L102,21.2 L82,26.2 Z"/>
+      <path d="M82,28 L102,23 L102,24.2 L82,29.2 Z"/>
+    </g>
+    <circle cx="44" cy="15" r="2" fill="#FFFFFF"/>
+    <circle cx="44" cy="15" r="1" fill="#16A349"/>
+  </g>
+</svg>

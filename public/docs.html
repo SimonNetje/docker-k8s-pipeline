@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="docs_title">Docs — Concreto</title>
+<meta name="description" content="Concreto documentation: quick start guides, deployment workflows, runtime configuration, and production best practices." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="https://concreto.run/docs" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Concreto" />
+<meta property="og:title" content="Concreto Docs — Deploy in Minutes" />
+<meta property="og:description" content="Learn how to deploy from Git to Kubernetes with Concreto using dashboard and CLI workflows." />
+<meta property="og:url" content="https://concreto.run/docs" />
+<meta property="og:image" content="https://concreto.run/social-preview.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Concreto Docs" />
+<meta name="twitter:description" content="Step-by-step deployment and platform docs for Concreto." />
+<meta name="twitter:image" content="https://concreto.run/social-preview.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
+<link rel="icon" href="favicon_io/favicon.ico" />
+<link rel="manifest" href="favicon_io/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+<style>
+  /* ── DOCS LAYOUT ──────────────────────────────── */
+  .docs-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - var(--nav-h));
+  }
+  @media(max-width:720px) {
+    .docs-layout { grid-template-columns: 1fr; }
+    .docs-sidebar { display: none; }
+  }
+
+  /* Sidebar */
+  .docs-sidebar {
+    border-right: 1px solid var(--border);
+    padding: 32px 0 80px;
+    position: sticky; top: var(--nav-h);
+    height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+  }
+  .docs-sidebar::-webkit-scrollbar { width: 4px; }
+  .docs-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .sidebar-section { padding: 0 16px; margin-bottom: 24px; }
+  .sidebar-heading {
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .09em; font-family: var(--mono);
+    padding: 6px 8px; margin-bottom: 4px;
+  }
+  .sidebar-link {
+    display: block; padding: 6px 8px; font-size: 13px; color: var(--text-2);
+    border-radius: var(--radius); text-decoration: none;
+    transition: background var(--transition), color var(--transition);
+    cursor: pointer;
+  }
+  .sidebar-link:hover { background: var(--border); color: var(--text-1); }
+  .sidebar-link.active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+
+  /* Main content */
+  .docs-content {
+    padding: 48px 64px 96px; max-width: 780px;
+  }
+  @media(max-width:900px) { .docs-content { padding: 40px 32px 80px; } }
+
+  /* Breadcrumb */
+  .doc-breadcrumb {
+    font-size: 12px; color: var(--text-3); font-family: var(--mono);
+    display: flex; align-items: center; gap: 6px; margin-bottom: 24px;
+  }
+  .doc-breadcrumb span { color: var(--text-3); }
+
+  /* Doc heading */
+  .doc-title { font-size: 28px; font-weight: 600; letter-spacing: -.03em; margin-bottom: 10px; }
+  .doc-lead { font-size: 16px; color: var(--text-2); line-height: 1.7; margin-bottom: 40px; }
+
+  /* Prose */
+  .doc-prose { line-height: 1.75; color: var(--text-1); }
+  .doc-prose h2 {
+    font-size: 18px; font-weight: 600; letter-spacing: -.025em;
+    margin: 40px 0 14px; padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .doc-prose h2:first-child { border-top: none; margin-top: 0; }
+  .doc-prose h3 { font-size: 15px; font-weight: 600; margin: 28px 0 10px; }
+  .doc-prose p { margin-bottom: 16px; font-size: 15px; color: var(--text-2); }
+  .doc-prose ul { margin: 0 0 16px 0; padding-left: 20px; }
+  .doc-prose li { font-size: 15px; color: var(--text-2); margin-bottom: 6px; line-height: 1.65; }
+  .doc-prose a { color: var(--accent); text-decoration: none; }
+  .doc-prose a:hover { text-decoration: underline; }
+  .doc-prose strong { color: var(--text-1); font-weight: 600; }
+  .doc-prose code {
+    font-family: var(--mono); font-size: 13px; padding: 2px 6px;
+    background: var(--border); border-radius: 4px; color: var(--text-1);
+  }
+
+  /* Code block */
+  .code-block {
+    background: #16171A; border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid #27282B; margin: 20px 0;
+  }
+  .code-block-header {
+    padding: 10px 16px; background: #1D1E21;
+    border-bottom: 1px solid #27282B;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .code-block-lang {
+    font-family: var(--mono); font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .code-block-copy {
+    font-family: var(--mono); font-size: 11px; color: #555; background: none;
+    border: none; cursor: pointer; padding: 2px 6px;
+    transition: color var(--transition);
+  }
+  .code-block-copy:hover { color: #999; }
+  .code-block pre {
+    padding: 20px 24px; margin: 0; overflow-x: auto;
+    font-family: var(--mono); font-size: 13px; line-height: 1.8;
+  }
+  .code-block pre::-webkit-scrollbar { height: 4px; }
+  .code-block pre::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  .ct-dim    { color: #4A4B4E; }
+  .ct-white  { color: #E2E2E0; }
+  .ct-green  { color: #5AF78E; }
+  .ct-blue   { color: #57C7FF; }
+  .ct-yellow { color: #F3F99D; }
+  .ct-purple { color: #C397D8; }
+  .ct-red    { color: #FF6E6E; }
+
+  /* Callout */
+  .callout {
+    border-radius: var(--radius); padding: 16px 18px; margin: 20px 0;
+    display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6;
+  }
+  .callout-info { background: var(--accent-bg); border: 1px solid rgba(10,110,255,.18); color: var(--text-1); }
+  .callout-warn { background: var(--warn-bg); border: 1px solid rgba(202,138,4,.2); color: var(--text-1); }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Step list */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 24px; margin: 24px 0; }
+  .step-item { display: flex; gap: 16px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--text-1); color: white; font-size: 12px; font-weight: 600;
+    display: grid; place-items: center; font-family: var(--mono); flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body { flex: 1; }
+  .step-body strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .step-body p { font-size: 14px; color: var(--text-2); margin: 0; line-height: 1.6; }
+
+  /* Inline badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500;
+    font-family: var(--mono);
+  }
+  .badge-blue { background: var(--accent-bg); color: var(--accent); }
+  .badge-green { background: var(--success-bg); color: var(--success); }
+
+  /* Doc nav (prev/next) */
+  .doc-nav {
+    display: flex; justify-content: space-between; gap: 16px;
+    margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--border);
+  }
+  .doc-nav-link {
+    display: flex; flex-direction: column; gap: 4px;
+    text-decoration: none; padding: 14px 18px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    flex: 1; max-width: 200px;
+  }
+  .doc-nav-link:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+  .doc-nav-label { font-size: 11px; color: var(--text-3); font-family: var(--mono); text-transform: uppercase; letter-spacing: .07em; }
+  .doc-nav-title { font-size: 14px; font-weight: 500; color: var(--text-1); }
+  .doc-nav-link.next { text-align: right; margin-left: auto; }
+
+  /* On this page */
+  .toc {
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 16px 18px; margin-bottom: 32px;
+  }
+  .toc-title { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; font-family: var(--mono); margin-bottom: 10px; }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .toc-link { font-size: 13px; color: var(--text-2); text-decoration: none; transition: color var(--transition); }
+  .toc-link:hover { color: var(--accent); }
+
+  /* ── MOBILE RESPONSIVE ─────────────────────────── */
+  @media (max-width: 720px) {
+    .docs-layout { grid-template-columns: 1fr; }
+
+    /* Sidebar becomes a horizontal scrollable tab strip */
+    .docs-sidebar {
+      display: flex !important;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      position: sticky; top: var(--nav-h); z-index: 50;
+      height: auto;
+      overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 12px;
+      gap: 4px;
+      background: var(--surface);
+    }
+    .docs-sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-section {
+      display: contents;
+    }
+    .sidebar-heading { display: none; }
+    .sidebar-link {
+      white-space: nowrap;
+      padding: 6px 12px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .docs-content { padding: 32px 20px 60px; }
+    .doc-nav { flex-direction: column; gap: 12px; }
+    .doc-nav-link { max-width: 100%; }
+    .doc-nav-link.next { margin-left: 0; text-align: left; }
+    .code-block pre { font-size: 12px; }
+  }
+
+  @media (max-width: 480px) {
+    .docs-content { padding: 24px 16px 48px; }
+    .doc-title { font-size: 24px; }
+    .doc-lead { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html" data-nav data-i18n="nav_product">Product</a>
+    <a class="nav-link active" href="docs.html" data-nav data-i18n="nav_docs">Docs</a>
+    <a class="nav-link" href="pricing.html" data-nav data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link lang-toggle" id="lang-toggle" type="button" aria-label="Switch language">EN</button>
+    <div id="nav-auth-btns" style="display:flex;align-items:center;gap:8px;">
+      <a class="nav-link" href="login.html" data-nav data-i18n="nav_login">Log in</a>
+      <a class="nav-cta" href="register.html" data-nav data-i18n="nav_get_started">Get started</a>
+    </div>
+    <div id="nav-user" class="hidden" style="display:flex;align-items:center;gap:10px;">
+      <a class="nav-link" href="dashboard.html" data-nav data-i18n="nav_dashboard">Dashboard</a>
+      <div class="avatar" onclick="logout()" title="Log out" data-i18n-title="nav_logout_title">SG</div>
+    </div>
+    <script>(function(){var l=localStorage.getItem('ph_logged_in')==='1';var a=document.getElementById('nav-auth-btns');var u=document.getElementById('nav-user');if(a)a.style.display=l?'none':'flex';if(u)u.style.display=l?'flex':'none';})()</script>
+  </div>
+</nav>
+
+<div class="page-wrap" style="padding-top: var(--nav-h);">
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <aside class="docs-sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Getting Started</div>
+      <a class="sidebar-link active" href="docs.html">Quick start</a>
+      <a class="sidebar-link" href="#">Installation &amp; CLI</a>
+      <a class="sidebar-link" href="#">Deploy your first app</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Configuration</div>
+      <a class="sidebar-link" href="#">Runtime options</a>
+      <a class="sidebar-link" href="#">Environment variables</a>
+      <a class="sidebar-link" href="#">Build &amp; start commands</a>
+      <a class="sidebar-link" href="#">Ports &amp; networking</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Domains &amp; HTTPS</div>
+      <a class="sidebar-link" href="#">Custom domains</a>
+      <a class="sidebar-link" href="#">Wildcard subdomains</a>
+      <a class="sidebar-link" href="#">SSL certificates</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Deployments</div>
+      <a class="sidebar-link" href="#">Deploy history</a>
+      <a class="sidebar-link" href="#">Instant rollback</a>
+      <a class="sidebar-link" href="#">Webhooks &amp; notifications</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Reference</div>
+      <a class="sidebar-link" href="#">CLI reference</a>
+      <a class="sidebar-link" href="#">REST API</a>
+      <a class="sidebar-link" href="#">Runtime limits</a>
+    </div>
+
+  </aside>
+
+  <!-- Main content -->
+  <main class="docs-content">
+
+    <div class="doc-breadcrumb">
+      <span>Docs</span>
+      <span>›</span>
+      <span>Getting Started</span>
+      <span>›</span>
+      <span style="color:var(--text-1)">Quick start</span>
+    </div>
+
+    <h1 class="doc-title">Quick start</h1>
+    <p class="doc-lead">Deploy your first project to Concreto in under five minutes. Connect a Git repository and let Kubernetes handle the rest — no infrastructure knowledge required.</p>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">On this page</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#prerequisites">Prerequisites</a></li>
+        <li><a class="toc-link" href="#deploy-dashboard">Deploy via dashboard</a></li>
+        <li><a class="toc-link" href="#deploy-cli">Deploy via CLI</a></li>
+        <li><a class="toc-link" href="#your-project-is-live">Your project is live</a></li>
+        <li><a class="toc-link" href="#whats-next">What's next</a></li>
+      </ul>
+    </div>
+
+    <div class="doc-prose">
+
+      <h2 id="prerequisites">Prerequisites</h2>
+      <p>Before you begin, make sure you have:</p>
+      <ul>
+        <li>A <strong>Concreto account</strong> — <a href="register.html" data-nav>sign up for free</a>, no credit card needed.</li>
+        <li>A project hosted in a <strong>Git repository</strong> (GitHub, GitLab, or any public URL). Concreto supports <strong>Node.js</strong>, <strong>Python</strong>, <strong>Go</strong>, and <strong>static sites</strong> out of the box.</li>
+        <li>Optionally, the <a href="#">Concreto CLI</a> installed for command-line deploys.</li>
+      </ul>
+
+      <h2 id="deploy-dashboard">Deploy via the dashboard</h2>
+      <p>The easiest way to get started is through the web dashboard — no terminal required.</p>
+
+      <ol class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Sign in and open the dashboard</strong>
+            <p>Go to your <a href="dashboard.html" data-nav>Concreto dashboard</a> and click <strong>+ New application</strong> in the top right.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Enter your Git repository URL</strong>
+            <p>Give your application a name and paste the Git repository URL (e.g. <code>https://github.com/you/my-app</code>). Concreto will clone and analyse the project automatically.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Click Deploy</strong>
+            <p>ArgoCD picks up the repository, runs the build pipeline, and provisions a Kubernetes pod. Watch the log output in real time from the Deployments view.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Your app is live</strong>
+            <p>Once the status turns <strong>Running</strong>, your project is accessible at a <code>*.concreto.run</code> subdomain. CPU, memory, and request metrics are available under the Metrics tab.</p>
+          </div>
+        </li>
+      </ol>
+
+      <h2 id="deploy-cli">Deploy via the CLI</h2>
+      <p>For faster iteration and CI/CD integration, use the Concreto CLI.</p>
+
+      <h3>Install the CLI</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-lang">bash</span>
+          <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ct-dim"># Install via npm</span>
+<span class="ct-blue">npm</span> <span class="ct-white">install -g @concreto/cli</span>
+
+<span class="ct-dim"># Or via Homebrew (macOS / Linux)</span>
+<span class="ct-blue">brew</span> <span class="ct-white">install concreto</span>
+
+<span class="ct-dim"># Verify installation</span>
+<span class="ct-blue">concreto</span> <span class="ct-white">--version</span></pre>
+      </div>
+
+      <h3>Authenticate</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-lang">bash</span>
+          <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ct-blue">concreto</span> <span class="ct-white">login</span>
+<span class="ct-dim"># Opens your browser to complete authentication</span>
+<span class="ct-green">✔</span> <span class="ct-white">Logged in as you@company.com</span></pre>
+      </div>
+
+      <h3>Deploy your project</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-lang">bash</span>
+          <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ct-dim"># Deploy from a Git repository URL</span>
+<span class="ct-blue">concreto</span> <span class="ct-white">deploy --repo https://github.com/you/my-app</span>
+
+<span class="ct-dim"># Or deploy from the current directory (reads .git remote)</span>
+<span class="ct-blue">concreto</span> <span class="ct-white">deploy</span></pre>
+      </div>
+
+      <p>The CLI reads a <code>concreto.json</code> config file if present in your project root. This lets you commit your deploy settings alongside your code.</p>
+
+      <h3>Example concreto.json</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-lang">json</span>
+          <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ct-white">{</span>
+  <span class="ct-blue">"name"</span><span class="ct-white">:</span> <span class="ct-green">"my-api"</span><span class="ct-white">,</span>
+  <span class="ct-blue">"repository"</span><span class="ct-white">:</span> <span class="ct-green">"https://github.com/you/my-api"</span><span class="ct-white">,</span>
+  <span class="ct-blue">"runtime"</span><span class="ct-white">:</span> <span class="ct-green">"node20"</span><span class="ct-white">,</span>
+  <span class="ct-blue">"build"</span><span class="ct-white">:</span> <span class="ct-green">"npm run build"</span><span class="ct-white">,</span>
+  <span class="ct-blue">"start"</span><span class="ct-white">:</span> <span class="ct-green">"npm start"</span><span class="ct-white">,</span>
+  <span class="ct-blue">"port"</span><span class="ct-white">:</span> <span class="ct-yellow">3000</span>
+<span class="ct-white">}</span></pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ</span>
+        <div>The <code>port</code> field is optional. Concreto automatically exposes port <code>3000</code> for Node.js, <code>8000</code> for Python, and <code>8080</code> for Go unless overridden. All traffic is routed through the Kubernetes Ingress controller over HTTPS.</div>
+      </div>
+
+      <h2 id="your-project-is-live">Your project is live</h2>
+      <p>After a successful deploy, you'll receive a URL like:</p>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-lang">output</span>
+        </div>
+        <pre><span class="ct-green">✔</span> <span class="ct-white">Deployment live in 21s</span>
+<span class="ct-yellow">→</span> <span class="ct-blue">my-api.concreto.run</span>
+<span class="ct-dim">  SHA: a1b2c3d  ·  Cluster: eu-west  ·  Runtime: Node 20 LTS</span></pre>
+      </div>
+
+      <p>Your app is now publicly accessible with a free <strong>HTTPS certificate</strong> provisioned automatically via the Kubernetes Ingress controller. Monitor CPU, memory, and request rates from the <strong>Metrics</strong> tab in your dashboard.</p>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚡</span>
+        <div>Free tier deployments are limited to 3 applications and 50 deployments per month. <a href="pricing.html" data-nav>Upgrade to Pro</a> for unlimited applications and 500 deployments/month.</div>
+      </div>
+
+      <h2 id="whats-next">What's next</h2>
+      <ul>
+        <li><strong>Custom domain</strong> — point your own domain to your deployment. See <a href="#">Custom domains</a>.</li>
+        <li><strong>Environment variables</strong> — store secrets and config safely. See <a href="#">Environment variables</a>.</li>
+        <li><strong>Rollbacks</strong> — revert to any previous deploy with one click. See <a href="#">Deploy history</a>.</li>
+        <li><strong>Webhooks</strong> — get notified on deploy events in Slack, Discord, or any HTTP endpoint. See <a href="#">Webhooks</a>.</li>
+        <li><strong>CLI reference</strong> — all available commands and flags. See <a href="#">CLI reference</a>.</li>
+      </ul>
+
+    </div>
+
+    <!-- Doc navigation -->
+    <div class="doc-nav">
+      <div></div>
+      <a class="doc-nav-link next" href="#">
+        <span class="doc-nav-label">Next →</span>
+        <span class="doc-nav-title">Installation &amp; CLI</span>
+      </a>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <a class="footer-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" style="width:20px;height:20px;" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="footer-links">
+    <a class="footer-link" href="docs.html" data-nav>Docs</a>
+    <a class="footer-link" href="pricing.html" data-nav>Pricing</a>
+    <a class="footer-link" href="status.html" data-nav>Status</a>
+    <a class="footer-link" href="security.html" data-nav>Security</a>
+    <a class="footer-link" href="privacy.html" data-nav>Privacy</a>
+    <a class="footer-link" href="terms.html" data-nav>Terms</a>
+    <a class="footer-link" href="contact.html" data-nav>Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Concreto, Inc.</div>
+</footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+<script>
+function copyCode(btn) {
+  var pre = btn.closest('.code-block').querySelector('pre');
+  var text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 1800);
+  }).catch(function() {
+    btn.textContent = 'Copy';
+  });
+}
+</script>
+</body>
+</html>

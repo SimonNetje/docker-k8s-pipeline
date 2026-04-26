@@ -10,6 +10,7 @@ node_modules
 dist
 build
 coverage
+_tmp_concreto_frontend
 .env
 .env.*
 *.log

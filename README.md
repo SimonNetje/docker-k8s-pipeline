@@ -1,10 +1,12 @@
 # docker-k8s-pipeline
 
-This repository contains a minimal static web container and Kubernetes manifests prepared for a GitOps deployment flow with ArgoCD.
+This repository contains the static Concreto frontend packaged as a Docker image, with Kubernetes manifests prepared for a GitOps deployment flow with ArgoCD.
 
 ## Application type
 
-The repository currently has no framework-specific application source. It is packaged as a static HTTP service using an unprivileged NGINX container on port `8080`. Replace the contents of `public/` and adjust the `Dockerfile` if a framework application is added later.
+The application is packaged as a static HTTP service using an unprivileged NGINX container on port `8080`. Static site files live in `public/`.
+
+The original Concreto frontend repository also contains a backend. This repository currently deploys only the static frontend; API/auth routes require a backend deployment to be added separately.
 
 ## Required GitHub secrets
 

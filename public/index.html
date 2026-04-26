@@ -1,14 +1,1295 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>docker-k8s-pipeline</title>
-  </head>
-  <body>
-    <main>
-      <h1>docker-k8s-pipeline</h1>
-      <p>Static container payload for the Docker, Kubernetes, and ArgoCD GitOps pipeline.</p>
-    </main>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="index_title">Concreto — Deploy with precision</title>
+<meta name="description" content="Concreto helps teams ship faster with Kubernetes-backed deployments, instant rollbacks, built-in observability, and predictable scaling." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="https://concreto.run/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Concreto" />
+<meta property="og:title" content="Concreto — Ship Faster, Sleep Better" />
+<meta property="og:description" content="Deploy from Git in seconds with a Kubernetes platform designed for reliability, rollback safety, and production scale." />
+<meta property="og:url" content="https://concreto.run/" />
+<meta property="og:image" content="https://concreto.run/social-preview.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Concreto — Ship Faster, Sleep Better" />
+<meta name="twitter:description" content="Deploy from Git in seconds with built-in reliability, observability, and rollback confidence." />
+<meta name="twitter:image" content="https://concreto.run/social-preview.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
+<link rel="icon" href="favicon_io/favicon.ico" />
+<link rel="manifest" href="favicon_io/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('ph_intro_seen')) {
+        document.documentElement.classList.add('intro-play');
+      }
+    } catch (e) {
+      document.documentElement.classList.add('intro-play');
+    }
+  }());
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Concreto",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "url": "https://concreto.run/",
+  "description": "Concreto is a Kubernetes-backed deployment platform that helps teams ship faster with safer releases.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<style>
+  /* ── INTRO OVERLAY ──────────────────────────── */
+  #intro-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background:
+      radial-gradient(circle at 50% 46%, rgba(255,255,255,.96) 0%, rgba(247,247,245,.92) 34%, transparent 66%),
+      linear-gradient(135deg, #F7F7F5 0%, #EEF4FF 46%, #F7F7F5 100%);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: all;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    cursor: pointer;
+    perspective: 1200px;
+  }
+  html.intro-play #intro-overlay { opacity: 1; visibility: visible; }
+  #intro-overlay::before {
+    content: '';
+    position: absolute; inset: -20%;
+    background-image:
+      linear-gradient(rgba(10,110,255,0.11) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,110,255,0.11) 1px, transparent 1px),
+      linear-gradient(rgba(107,72,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(107,72,255,0.055) 1px, transparent 1px);
+    background-size: 56px 56px, 56px 56px, 14px 14px, 14px 14px;
+    opacity: 0;
+    transform: rotateX(62deg) translateY(12%) scale(1.35);
+    transform-origin: center;
+    animation: introGridAwake 3.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    will-change: transform, opacity, background-position;
+  }
+  #intro-overlay::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 58% 40% at 50% 46%, rgba(10,110,255,0.24) 0%, transparent 68%),
+      radial-gradient(ellipse 48% 32% at 22% 62%, rgba(0,180,255,0.14) 0%, transparent 74%),
+      radial-gradient(ellipse 46% 32% at 78% 34%, rgba(107,72,255,0.14) 0%, transparent 72%);
+    pointer-events: none;
+    animation: introAuraDrift 3.7s ease-in-out forwards;
+  }
+  .intro-beam {
+    position: absolute; inset: auto -18% 50%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(10,110,255,.10), rgba(10,110,255,.72), rgba(0,180,255,.44), transparent);
+    box-shadow: 0 0 36px rgba(10,110,255,.34), 0 0 120px rgba(107,72,255,.16);
+    opacity: 0; z-index: 1; pointer-events: none;
+  }
+  .intro-beam-1 { transform: translateY(-96px) rotate(-7deg); animation: introBeamSweep 2.45s cubic-bezier(.16,1,.3,1) .28s forwards; }
+  .intro-beam-2 { transform: translateY(102px) rotate(6deg); animation: introBeamSweep 2.65s cubic-bezier(.16,1,.3,1) .48s reverse forwards; }
+  .intro-constellation {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  }
+  .intro-node {
+    position: absolute;
+    left: var(--x); top: var(--y);
+    width: var(--s); height: var(--s);
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid rgba(10,110,255,.34);
+    box-shadow: 0 0 18px rgba(10,110,255,.32), 0 0 42px rgba(0,180,255,.12);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.35);
+    animation: introNodeIgnite 1.7s cubic-bezier(.16,1,.3,1) var(--d) forwards;
+  }
+  .intro-node::after {
+    content: '';
+    position: absolute; inset: -9px;
+    border-radius: inherit;
+    border: 1px solid rgba(10,110,255,.12);
+    animation: introNodePulse 1.7s ease-out var(--d) forwards;
+  }
+  .intro-particle {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: var(--s); height: var(--s);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0A6EFF, #00B4FF);
+    box-shadow: 0 0 14px rgba(10,110,255,.38);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    animation: introParticleBurst 1.65s cubic-bezier(.16,1,.3,1) var(--d) forwards;
+  }
+  #intro-content {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    transform-origin: center center;
+    position: relative; z-index: 3;
+    will-change: transform, opacity, filter;
+  }
+  .intro-core {
+    position: absolute; top: 50%; left: 50%;
+    width: clamp(220px, 34vw, 420px); height: clamp(220px, 34vw, 420px);
+    transform: translate(-50%, -50%) scale(.78);
+    border-radius: 50%;
+    opacity: 0; pointer-events: none; z-index: 0;
+    background:
+      conic-gradient(from 160deg, transparent 0deg, rgba(10,110,255,.34) 42deg, transparent 82deg, rgba(0,180,255,.22) 142deg, transparent 198deg, rgba(107,72,255,.26) 264deg, transparent 326deg),
+      radial-gradient(circle, rgba(255,255,255,.72) 0%, rgba(10,110,255,.08) 40%, transparent 68%);
+    filter: blur(.2px);
+    animation: introCoreSpin 2.9s cubic-bezier(.16,1,.3,1) .08s forwards;
+  }
+  .intro-core::before,
+  .intro-core::after {
+    content: '';
+    position: absolute; inset: 12%;
+    border-radius: inherit;
+    border: 1px solid rgba(10,110,255,.18);
+    box-shadow: 0 0 42px rgba(10,110,255,.12) inset;
+  }
+  .intro-core::after {
+    inset: 27%;
+    border-color: rgba(0,180,255,.22);
+    transform: rotate(42deg);
+  }
+  /* Expanding pulse rings */
+  .intro-ring {
+    position: absolute; top: 50%; left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.10);
+    opacity: 0; pointer-events: none; z-index: 1;
+    box-shadow: 0 0 40px rgba(10,110,255,.08), inset 0 0 40px rgba(10,110,255,.04);
+  }
+  .intro-ring-1 {
+    width: 210px; height: 210px;
+    border: 1px solid rgba(10,110,255,0.36);
+    animation: introRingExpand 2.25s cubic-bezier(0.16,1,0.3,1) 0.18s forwards;
+  }
+  .intro-ring-2 {
+    width: 390px; height: 390px;
+    border: 1px solid rgba(10,110,255,0.18);
+    animation: introRingExpand 2.5s cubic-bezier(0.16,1,0.3,1) 0.42s forwards;
+  }
+  .intro-ring-3 {
+    width: 620px; height: 620px;
+    border: 1px solid rgba(107,72,255,0.13);
+    animation: introRingExpand 2.85s cubic-bezier(0.16,1,0.3,1) 0.66s forwards;
+  }
+  @keyframes introRingExpand {
+    0%   { transform: translate(-50%,-50%) scale(0.10) rotate(0deg); opacity: 0; }
+    14%  { opacity: 1; }
+    74%  { opacity: 0.22; }
+    100% { transform: translate(-50%,-50%) scale(1.16) rotate(16deg); opacity: 0; }
+  }
+  .intro-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(680px, 110vw); height: min(680px, 110vw); border-radius: 50%;
+    background:
+      radial-gradient(circle, rgba(255,255,255,.96) 0%, rgba(255,255,255,.48) 18%, transparent 34%),
+      radial-gradient(circle, rgba(10,110,255,0.22) 0%, rgba(107,72,255,0.12) 42%, transparent 70%);
+    opacity: 0; pointer-events: none; z-index: 0;
+    animation: introGlowIn 1.7s ease 0.04s forwards;
+  }
+  .intro-logo {
+    width: clamp(72px, 10vw, 106px); height: clamp(72px, 10vw, 106px);
+    opacity: 0; transform: scale(2.4) translateY(-20px) rotate(-10deg);
+    animation: introLogoIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.24s forwards;
+    position: relative; z-index: 1;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 8px 34px rgba(10,110,255,0.30));
+  }
+  /* Wordmark row with flanking dividers */
+  .intro-wordmark-row {
+    display: flex; align-items: center; gap: 16px;
+    position: relative; z-index: 1;
+  }
+  .intro-divider-hl {
+    height: 1px; width: 0; flex-shrink: 0; opacity: 0;
+  }
+  .intro-divider-hl-l {
+    background: linear-gradient(to right, transparent, rgba(10,110,255,0.4));
+  }
+  .intro-divider-hl-r {
+    background: linear-gradient(to left, transparent, rgba(10,110,255,0.4));
+  }
+  .intro-word-wrap {
+    display: flex; gap: 0; overflow: visible; line-height: 1;
+  }
+  .intro-letter {
+    display: inline-block;
+    font-size: clamp(48px, 9.4vw, 104px); font-weight: 700;
+    color: var(--text-1); letter-spacing: 0;
+    font-family: 'Geist', system-ui, sans-serif;
+    opacity: 0; transform: translateY(78px) skewY(10deg) scale(.86); line-height: 1;
+    text-shadow: 0 14px 46px rgba(10,110,255,.16);
+  }
+  .intro-accent-line {
+    height: 2px; width: 0; margin-top: 12px;
+    background: linear-gradient(90deg, transparent, #0A6EFF 20%, #00B4FF 48%, #6B48FF 72%, transparent);
+    border-radius: 1px;
+    box-shadow: 0 0 20px rgba(10,110,255,.48);
+  }
+  .intro-tagline {
+    font-size: clamp(9px, 1.35vw, 13px); letter-spacing: 0.26em;
+    text-transform: uppercase; font-family: 'Geist Mono', monospace;
+    color: var(--text-3); margin-top: 20px;
+    opacity: 0; transform: translateY(10px);
+  }
+  .intro-status {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 14px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px; color: var(--text-3);
+    letter-spacing: .1em; text-transform: uppercase;
+    opacity: 0; transform: translateY(8px);
+  }
+  .intro-status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #16A349;
+    box-shadow: 0 0 16px rgba(22,163,73,.54);
+  }
+  .intro-skip {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.1em; white-space: nowrap;
+    opacity: 0; pointer-events: none; z-index: 3;
+  }
+  @keyframes introGridAwake {
+    0%   { opacity: 0; background-position: 0 0, 0 0, 0 0, 0 0; transform: rotateX(70deg) translateY(18%) scale(1.55); }
+    22%  { opacity: .72; }
+    100% { opacity: .95; background-position: 0 -88px, -88px 0, 0 -34px, -34px 0; transform: rotateX(62deg) translateY(8%) scale(1.28); }
+  }
+  @keyframes introAuraDrift {
+    0% { opacity: .2; filter: blur(0); transform: scale(1); }
+    45% { opacity: 1; }
+    100% { opacity: .82; filter: blur(1px); transform: scale(1.05); }
+  }
+  @keyframes introBeamSweep {
+    0% { opacity: 0; clip-path: inset(0 100% 0 0); }
+    18% { opacity: 1; }
+    68% { opacity: .88; clip-path: inset(0 0 0 0); }
+    100% { opacity: 0; clip-path: inset(0 0 0 100%); }
+  }
+  @keyframes introNodeIgnite {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.35); }
+    35% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+    100% { opacity: .7; transform: translate(-50%, -50%) scale(.86); }
+  }
+  @keyframes introNodePulse {
+    0% { opacity: .85; transform: scale(.2); }
+    100% { opacity: 0; transform: scale(3.2); }
+  }
+  @keyframes introParticleBurst {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); }
+    22% { opacity: .9; }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1); }
+  }
+  @keyframes introCoreSpin {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.5) rotate(-80deg); }
+    32% { opacity: .92; }
+    100% { opacity: .58; transform: translate(-50%, -50%) scale(1) rotate(150deg); }
+  }
+  @keyframes introGlowIn    { to { opacity: 1; } }
+  @keyframes introLogoIn    { to { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } }
+  @keyframes introLetterIn  { to { opacity: 1; transform: translateY(0) skewY(0deg) scale(1); } }
+  @keyframes introLineIn    { to { width: 100%; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    #intro-overlay::before,
+    #intro-overlay::after,
+    .intro-ring,
+    .intro-glow,
+    .intro-logo,
+    .intro-core,
+    .intro-node,
+    .intro-node::after,
+    .intro-particle,
+    .intro-beam,
+    .intro-letter {
+      animation-duration: .01ms !important;
+      animation-delay: 0ms !important;
+    }
+  }
+
+  /* ── HERO ──────────────────────────────────────── */
+  .hero-section {
+    max-width: 760px; margin: 0 auto;
+    padding: 100px 32px 60px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px; border-radius: 99px;
+    background: var(--accent-bg); border: 1px solid rgba(10,110,255,.18);
+    color: var(--accent); font-size: 12px; font-weight: 500; letter-spacing: .2px;
+    font-family: var(--mono);
+  }
+  .hero-eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .hero-headline {
+    font-size: clamp(36px, 5.5vw, 58px); font-weight: 600; line-height: 1.08;
+    letter-spacing: -.04em; color: var(--text-1);
+  }
+  .hero-headline .accent-word {
+    background: linear-gradient(135deg, var(--accent) 0%, #6B48FF 40%, #00B4FF 80%, var(--accent) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 6s ease infinite;
+  }
+  .hero-headline .muted-word { color: var(--text-3); }
+  .hero-sub {
+    font-size: 17px; color: var(--text-2); line-height: 1.7; max-width: 540px;
+  }
+  .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .hero-note { font-size: 12px; color: var(--text-3); }
+
+  /* ── TERMINAL ──────────────────────────────────── */
+  .terminal-wrap { max-width: 760px; margin: 0 auto; padding: 0 32px 72px; }
+  .terminal {
+    background: #16171A; border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid #27282B; box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.04) inset;
+  }
+  .terminal-bar {
+    padding: 10px 16px; background: #1D1E21; display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid #27282B;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r{background:#FF5F57;} .dot-y{background:#FFBD2E;} .dot-g{background:#28C840;}
+  .terminal-path { margin-left: 8px; font-family: var(--mono); font-size: 12px; color: #555; }
+  .terminal-body { padding: 22px 26px; font-family: var(--mono); font-size: 13px; line-height: 2; }
+  .t-dim    { color: #4A4B4E; }
+  .t-white  { color: #E2E2E0; }
+  .t-green  { color: #5AF78E; }
+  .t-blue   { color: #57C7FF; }
+  .t-yellow { color: #F3F99D; }
+  .t-purple { color: #C397D8; }
+  .cursor {
+    display: inline-block; width: 8px; height: 14px; background: #E2E2E0;
+    vertical-align: middle; animation: blink 1s step-end infinite;
+  }
+
+  /* ── SOCIAL PROOF BAR ──────────────────────────── */
+  .proof-bar {
+    max-width: 760px; margin: 0 auto; padding: 0 32px 72px;
+    display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
+  }
+  .proof-divider { height: 28px; width: 1px; background: var(--border); }
+  .proof-stat { display: flex; flex-direction: column; gap: 2px; }
+  .proof-stat-value { font-size: 22px; font-weight: 600; letter-spacing: -.03em; }
+  .proof-stat-label { font-size: 12px; color: var(--text-3); }
+
+  /* ── SECTION HEADER ────────────────────────────── */
+  .section-header { max-width: 760px; margin: 0 auto; padding: 0 32px 40px; }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 500; color: var(--text-3); letter-spacing: .1em;
+    text-transform: uppercase; font-family: var(--mono);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .section-eyebrow::after { content:''; flex:1; height:1px; background: var(--border); }
+  .section-title { font-size: clamp(22px, 3vw, 28px); font-weight: 600; letter-spacing: -.025em; }
+  .section-desc  { font-size: 15px; color: var(--text-2); margin-top: 8px; }
+
+  /* ── HOW IT WORKS ──────────────────────────────── */
+  .steps-grid {
+    max-width: 760px; margin: 0 auto; padding: 0 32px 80px;
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+  }
+  @media(max-width:620px){ .steps-grid{ grid-template-columns:1fr; } }
+  .step { display: flex; flex-direction: column; gap: 12px; }
+  .step-number { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: .06em; }
+  .step-title  { font-size: 15px; font-weight: 600; }
+  .step-desc   { font-size: 13px; color: var(--text-2); line-height: 1.65; }
+
+  /* ── FEATURES ──────────────────────────────────── */
+  .features-grid {
+    max-width: 760px; margin: 0 auto; padding: 0 32px 80px;
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+  }
+  @media(max-width:620px){ .features-grid{ grid-template-columns:1fr; } }
+  .feature-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 22px; display: flex; flex-direction: column; gap: 10px;
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+  .feature-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .feature-icon {
+    width: 34px; height: 34px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); display: grid; place-items: center; color: var(--text-2);
+  }
+  .feature-title { font-size: 14px; font-weight: 600; }
+  .feature-desc  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+  /* ── SERVICES GLOBE ────────────────────────────── */
+  .globe-section { padding: 0 32px 80px; overflow: visible; }
+  .globe-section .section-header { max-width: 760px; margin: 0 auto; }
+  .globe-hint {
+    font-size: 11px; color: var(--text-3); font-family: var(--mono);
+    display: flex; align-items: center; gap: 6px; user-select: none;
+    max-width: 760px; margin: 0 auto 24px;
+  }
+  .globe-outer { display: flex; flex-direction: column; align-items: center; }
+  .globe-container {
+    position: relative;
+    width: min(580px, 100%);
+    aspect-ratio: 1;
+  }
+  /* Ambient glow ring outside the sphere */
+  .globe-atmosphere {
+    position: absolute; inset: -7%; border-radius: 50%;
+    background: radial-gradient(ellipse,
+      transparent 43%,
+      rgba(10,110,255,.05) 57%,
+      rgba(10,110,255,.15) 71%,
+      rgba(107,72,255,.07) 84%,
+      transparent 96%);
+    animation: globeGlow 5s ease-in-out infinite alternate;
+    pointer-events: none; z-index: 0;
+  }
+  @keyframes globeGlow {
+    from { opacity: .45; transform: scale(.96); }
+    to   { opacity: 1;   transform: scale(1.02); }
+  }
+  /* Glass sphere surface */
+  .globe-bg {
+    position: absolute; inset: 0; border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 34% 28%, rgba(255,255,255,1) 0%, rgba(255,255,255,.65) 28%, transparent 54%),
+      radial-gradient(ellipse at 67% 73%, rgba(190,215,255,.55) 0%, transparent 44%),
+      radial-gradient(ellipse at 50% 50%, #EDF2FF 0%, #E2ECFF 55%, #D6E3FF 100%);
+    border: 1px solid rgba(10,110,255,.14);
+    box-shadow:
+      inset 0 0 80px rgba(255,255,255,.8),
+      inset -20px -20px 55px rgba(10,110,255,.08),
+      0 0 0 5px rgba(10,110,255,.05),
+      0 0 0 16px rgba(10,110,255,.025),
+      0 30px 80px rgba(10,110,255,.18),
+      0 8px 24px rgba(0,0,0,.06);
+    pointer-events: none; z-index: 1;
+  }
+  /* Top-left specular highlight */
+  .globe-bg::after {
+    content: ''; position: absolute; top: 7%; left: 12%; width: 30%; height: 22%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255,255,255,.85) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .globe-wrap {
+    position: absolute; inset: 0;
+    perspective: 1100px; cursor: grab; z-index: 2;
+  }
+  .globe-wrap:active { cursor: grabbing; }
+  .globe-sphere { width: 100%; height: 100%; transform-style: preserve-3d; }
+  .globe-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(10,110,255,.09);
+    top: 50%; left: 50%; pointer-events: none; box-sizing: border-box;
+  }
+  .globe-meridian {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(10,110,255,.065);
+    top: 50%; left: 50%; pointer-events: none; box-sizing: border-box;
+  }
+  /* Tiny glowing dots scattered across the sphere */
+  .globe-dot {
+    position: absolute; width: 4px; height: 4px;
+    top: 50%; left: 50%; margin: -2px 0 0 -2px;
+    border-radius: 50%;
+    background: rgba(10,110,255,.45);
+    box-shadow: 0 0 5px rgba(10,110,255,.5), 0 0 12px rgba(10,110,255,.2);
+    pointer-events: none; will-change: opacity;
+  }
+  .globe-node {
+    position: absolute; width: 46px; height: 58px;
+    top: 50%; left: 50%; margin: -29px 0 0 -23px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: default; will-change: opacity;
+  }
+  .globe-node-chip {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,.97);
+    border: 1px solid rgba(0,0,0,.07);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.05), inset 0 1px 0 rgba(255,255,255,1);
+    overflow: hidden;
+    transition: border-color 160ms, box-shadow 160ms, background 160ms, transform 160ms;
+  }
+  .globe-node:hover .globe-node-chip {
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(10,110,255,.16), 0 4px 20px rgba(10,110,255,.2);
+    transform: scale(1.18);
+  }
+  .globe-node img {
+    width: 22px; height: 22px; object-fit: contain;
+    display: block; pointer-events: none;
+  }
+  .globe-node-fallback {
+    font-size: 8px; font-weight: 700; color: var(--text-2);
+    font-family: var(--mono); letter-spacing: -.02em;
+  }
+  .globe-node-label {
+    font-size: 8px; font-family: var(--mono);
+    color: var(--text-3); white-space: nowrap;
+    font-weight: 500; pointer-events: none;
+  }
+
+  /* ── CTA ───────────────────────────────────────── */
+  .cta-section { max-width: 760px; margin: 0 auto; padding: 0 32px 96px; }
+  .cta-card {
+    background: var(--text-1); color: #fff; border-radius: var(--radius-lg);
+    padding: 52px 48px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(10,110,255,.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-card::after {
+    content: ''; position: absolute; bottom: -50px; left: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(107,72,255,.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-title { font-size: clamp(22px, 3vw, 28px); font-weight: 600; letter-spacing: -.025em; }
+  .cta-sub   { font-size: 15px; color: rgba(255,255,255,.65); max-width: 440px; line-height: 1.65; }
+  .cta-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-cta-primary {
+    padding: 10px 22px; font-size: 14px; font-weight: 500;
+    background: var(--accent); color: #fff; border-radius: var(--radius);
+    border: none; cursor: pointer; font-family: var(--font);
+    transition: opacity var(--transition); text-decoration: none;
+    display: inline-flex; align-items: center;
+  }
+  .btn-cta-primary:hover { opacity: .88; }
+  .btn-cta-secondary {
+    padding: 10px 22px; font-size: 14px; font-weight: 500;
+    background: rgba(255,255,255,.08); color: rgba(255,255,255,.85);
+    border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius);
+    cursor: pointer; font-family: var(--font);
+    transition: background var(--transition); text-decoration: none;
+    display: inline-flex; align-items: center;
+  }
+  .btn-cta-secondary:hover { background: rgba(255,255,255,.16); }
+
+  /* ── MOBILE RESPONSIVE ─────────────────────────────────── */
+  @media (max-width: 640px) {
+    .hero-section { padding: 64px 20px 40px; gap: 20px; }
+    .hero-sub { font-size: 16px; max-width: 100%; }
+    .terminal-wrap { padding: 0 16px 48px; }
+    .terminal-body { padding: 14px 16px; font-size: 12px; line-height: 1.85; }
+    .terminal-path { font-size: 11px; }
+    .proof-bar { padding: 0 20px 48px; gap: 20px; }
+    .proof-divider { display: none; }
+    .section-header { padding: 0 20px 28px; }
+    .steps-grid { padding: 0 20px 48px; gap: 20px; }
+    .features-grid { padding: 0 20px 48px; }
+    .globe-section { padding: 0 16px 48px; }
+    .globe-hint { padding: 0; margin-left: 4px; }
+    .cta-section { padding: 0 20px 60px; }
+    .cta-card { padding: 36px 24px; }
+    .cta-sub { max-width: 100%; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-section { padding: 56px 16px 32px; }
+    .hero-headline { letter-spacing: -.03em; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-secondary { justify-content: center; text-align: center; }
+    .proof-bar { gap: 16px; }
+    .proof-stat-value { font-size: 20px; }
+    .cta-card { padding: 28px 18px; }
+    .cta-actions { flex-direction: column; align-items: stretch; }
+    .cta-actions .btn-cta-primary,
+    .cta-actions .btn-cta-secondary { justify-content: center; text-align: center; }
+    .terminal-wrap { padding: 0 12px 40px; }
+    .terminal-body { padding: 12px 14px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="intro-overlay" aria-hidden="true">
+  <div class="intro-constellation" id="intro-constellation"></div>
+  <div class="intro-beam intro-beam-1"></div>
+  <div class="intro-beam intro-beam-2"></div>
+  <div class="intro-ring intro-ring-1"></div>
+  <div class="intro-ring intro-ring-2"></div>
+  <div class="intro-ring intro-ring-3"></div>
+  <div id="intro-content">
+    <div class="intro-core"></div>
+    <div class="intro-glow"></div>
+    <img class="intro-logo" src="concreto-hosting-logo%20(2).svg" alt="" />
+    <div class="intro-wordmark-row">
+      <div class="intro-divider-hl intro-divider-hl-l"></div>
+      <div class="intro-word-wrap" id="intro-word-wrap"></div>
+      <div class="intro-divider-hl intro-divider-hl-r"></div>
+    </div>
+    <div class="intro-accent-line" id="intro-accent-line"></div>
+    <div class="intro-tagline" id="intro-tagline">Deploy with precision.</div>
+    <div class="intro-status" id="intro-status"><span class="intro-status-dot"></span><span>Cluster online</span></div>
+  </div>
+  <div class="intro-skip" id="intro-skip">Click anywhere to continue</div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" href="index.html" data-nav data-i18n="nav_product">Product</a>
+    <a class="nav-link" href="docs.html" data-nav data-i18n="nav_docs">Docs</a>
+    <a class="nav-link" href="pricing.html" data-nav data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link lang-toggle" id="lang-toggle" type="button" aria-label="Switch language">EN</button>
+    <div id="nav-auth-btns" style="display:flex;align-items:center;gap:8px;">
+      <a class="nav-link" href="login.html" data-nav data-i18n="nav_login">Log in</a>
+      <a class="nav-cta" href="register.html" data-nav data-i18n="nav_get_started">Get started</a>
+    </div>
+    <div id="nav-user" class="hidden" style="display:flex;align-items:center;gap:10px;">
+      <a class="nav-link" href="dashboard.html" data-nav data-i18n="nav_dashboard">Dashboard</a>
+      <div class="avatar" onclick="logout()" title="Log out" data-i18n-title="nav_logout_title">SG</div>
+    </div>
+    <script>(function(){var l=localStorage.getItem('ph_logged_in')==='1';var a=document.getElementById('nav-auth-btns');var u=document.getElementById('nav-user');if(a)a.style.display=l?'none':'flex';if(u)u.style.display=l?'flex':'none';})()</script>
+  </div>
+</nav>
+
+<div class="page-wrap" style="padding-top: var(--nav-h);">
+
+  <!-- HERO -->
+  <section class="hero-section">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      <span data-i18n="index_hero_eyebrow">Built for teams that release every day</span>
+    </div>
+    <h1 class="hero-headline">
+      <span data-i18n="index_hero_line1">Reduce release risk.</span><br/>
+      <span class="accent-word" data-i18n="index_hero_line2_accent">Ship faster,</span>
+      <span class="muted-word" data-i18n="index_hero_line2_muted">with confidence.</span>
+    </h1>
+    <p class="hero-sub" data-i18n="index_hero_sub">
+      Connect your Git repository and deploy in seconds. Concreto gives your team reliable Kubernetes infrastructure, instant rollback paths, and production-grade observability without expanding your DevOps headcount.
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="register.html" data-nav data-i18n="index_hero_cta_primary">Start free deployment</a>
+      <a class="btn-secondary" href="docs.html" data-nav data-i18n="index_hero_cta_secondary">Read the docs</a>
+      <a class="btn-secondary" href="contact.html" data-nav>Book a technical demo</a>
+    </div>
+    <p class="hero-note" data-i18n="index_hero_note">No credit card required · Free tier available · Migration support included</p>
+  </section>
+
+  <!-- TERMINAL DEMO -->
+  <div class="terminal-wrap reveal">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-path">~/my-project</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-dim">$</span> <span class="t-blue">concreto</span> <span class="t-white">deploy --repo https://github.com/you/my-app</span></div>
+        <div class="t-line t-dim">&nbsp; Cloning repository…</div>
+        <div class="t-line"><span class="t-green">✔</span> <span class="t-white">Repository cloned</span> <span class="t-dim">(1.3s)</span></div>
+        <div class="t-line"><span class="t-green">✔</span> <span class="t-white">Build pipeline triggered</span> <span class="t-dim">· Node 20 LTS</span></div>
+        <div class="t-line"><span class="t-green">✔</span> <span class="t-white">Kubernetes pod provisioned</span> <span class="t-dim">· EU West</span></div>
+        <div class="t-line"><span class="t-purple">i</span> <span class="t-white">Running</span> <span class="t-yellow">npm install</span> <span class="t-dim">&amp;&amp;</span> <span class="t-yellow">npm run build</span></div>
+        <div class="t-line"><span class="t-green">✔</span> <span class="t-white">Build successful</span> <span class="t-dim">(14s)</span></div>
+        <div class="t-line"><span class="t-yellow">→</span> <span class="t-white">Live at</span> <span class="t-blue">my-app.concreto.run</span></div>
+        <div class="t-line"><span class="t-dim">&nbsp; Total deploy time: 21s</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="proof-bar reveal">
+    <div class="proof-stat">
+      <div class="proof-stat-value" data-count-to="12000" data-count-suffix="+">12,000+</div>
+      <div class="proof-stat-label" data-i18n="index_proof_label_1">Deployments this month</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-value" data-count-to="99.67" data-count-decimals="2" data-count-suffix="%">99.67%</div>
+      <div class="proof-stat-label" data-i18n="index_proof_label_2">Platform uptime</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-value" data-count-to="25" data-count-prefix="&lt; " data-count-suffix="s">&lt; 25s</div>
+      <div class="proof-stat-label" data-i18n="index_proof_label_3">Avg. deploy time</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-value">EU West</div>
+      <div class="proof-stat-label" data-i18n="index_proof_label_4">Kubernetes cluster</div>
+    </div>
+  </div>
+
+  <!-- TRUSTED BY -->
+  <div class="brand-bar reveal">
+    <div class="brand-bar-label" data-i18n="index_brand_label">Trusted by teams at</div>
+    <div class="brand-logos" aria-hidden="true">
+      <div class="brand-logos-track">
+        <span class="brand-name">Accelify</span>
+        <span class="brand-name">Stackfront</span>
+        <span class="brand-name">Driftwork</span>
+        <span class="brand-name">Novaris</span>
+        <span class="brand-name">Lumeo</span>
+        <span class="brand-name">Gridcraft</span>
+        <span class="brand-name">Accelify</span>
+        <span class="brand-name">Stackfront</span>
+        <span class="brand-name">Driftwork</span>
+        <span class="brand-name">Novaris</span>
+        <span class="brand-name">Lumeo</span>
+        <span class="brand-name">Gridcraft</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section-header reveal">
+    <div class="section-eyebrow" data-i18n="index_how_eyebrow">How it works</div>
+    <div class="section-title" data-i18n="index_how_title">From Git to live in three steps</div>
+    <div class="section-desc" data-i18n="index_how_desc">No DevOps expertise required. We handle the Kubernetes orchestration so you don't have to.</div>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step reveal">
+      <div class="step-number">01</div>
+      <div class="step-title" data-i18n="index_step_1_title">Connect your Git repository</div>
+      <div class="step-desc" data-i18n="index_step_1_desc">Provide your Git repository URL. We clone it, detect the runtime automatically, and support Node.js, Python, Go, and static sites out of the box.</div>
+    </div>
+    <div class="step reveal" style="--reveal-delay:80ms">
+      <div class="step-number">02</div>
+      <div class="step-title" data-i18n="index_step_2_title">Configure &amp; deploy</div>
+      <div class="step-desc" data-i18n="index_step_2_desc">Review the auto-detected build command and environment config. One click triggers ArgoCD to sync and deploy your app into the Kubernetes cluster.</div>
+    </div>
+    <div class="step reveal" style="--reveal-delay:160ms">
+      <div class="step-number">03</div>
+      <div class="step-title" data-i18n="index_step_3_title">Monitor &amp; scale</div>
+      <div class="step-desc" data-i18n="index_step_3_desc">Track build logs in real time via Grafana and Loki. Kubernetes auto-scales under traffic spikes and self-heals failed pods automatically.</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section-header reveal">
+    <div class="section-eyebrow" data-i18n="index_features_eyebrow">Features</div>
+    <div class="section-title" data-i18n="index_features_title">Everything you need to ship confidently</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_1_title">Git-based deploys</div>
+      <div class="feature-desc" data-i18n="index_feature_1_desc">Provide your repository URL. ArgoCD syncs and deploys your app automatically — no manual uploads, no build scripts to maintain.</div>
+    </div>
+    <div class="feature-card reveal" style="--reveal-delay:70ms">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_2_title">Environment isolation</div>
+      <div class="feature-desc" data-i18n="index_feature_2_desc">Each deploy runs in its own sandboxed container. No cross-project interference, no shared state.</div>
+    </div>
+    <div class="feature-card reveal" style="--reveal-delay:140ms">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M8 5v3.5l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_3_title">Deploy history</div>
+      <div class="feature-desc" data-i18n="index_feature_3_desc">Every deployment is logged. Roll back to any previous version with a single click, anytime.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v4M8 10v4M2 8h4M10 8h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_4_title">Auto scaling</div>
+      <div class="feature-desc" data-i18n="index_feature_4_desc">Kubernetes scales your containers up under traffic spikes and back down when load drops — automatically, no manual intervention.</div>
+    </div>
+    <div class="feature-card reveal" style="--reveal-delay:70ms">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M13 5l-6 6-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_5_title">Instant HTTPS</div>
+      <div class="feature-desc" data-i18n="index_feature_5_desc">Free SSL certificates provisioned automatically for every deployment. No manual cert management.</div>
+    </div>
+    <div class="feature-card reveal" style="--reveal-delay:140ms">
+      <div class="feature-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8a5 5 0 1010 0A5 5 0 003 8z" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M2 5.5h12M2 10.5h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title" data-i18n="index_feature_6_title">Grafana monitoring</div>
+      <div class="feature-desc" data-i18n="index_feature_6_desc">Prometheus and Loki collect metrics and logs from every container. Visualise CPU, memory, requests per second, and more in Grafana dashboards.</div>
+    </div>
+  </div>
+
+  <!-- SERVICES GLOBE -->
+  <div class="globe-section">
+    <div class="section-header reveal">
+      <div class="section-eyebrow" data-i18n="index_stack_eyebrow">Tech Stack</div>
+      <div class="section-title" data-i18n="index_stack_title">Powered by proven open source</div>
+      <div class="section-desc" data-i18n="index_stack_desc">Every layer of our infrastructure runs on battle-tested, community-trusted technology.</div>
+    </div>
+    <p class="globe-hint">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M5.5 2C5.5 1.17 6.17.5 7 .5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V2z"/><path d="M7 9v3.5M4.5 12.5h5"/></svg>
+      <span data-i18n="index_stack_hint">Hold &amp; drag to rotate</span>
+    </p>
+    <div class="globe-outer reveal">
+      <div class="globe-container">
+        <div class="globe-atmosphere"></div>
+        <div class="globe-bg"></div>
+        <div class="globe-wrap" id="globeWrap">
+          <div class="globe-sphere" id="globeSphere"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section-header reveal">
+    <div class="section-eyebrow" data-i18n="index_testimonials_eyebrow">What teams say</div>
+    <div class="section-title" data-i18n="index_testimonials_title">Loved by developers who ship</div>
+    <div class="section-desc" data-i18n="index_testimonials_desc">From solo founders to engineering teams — Concreto fits how you work.</div>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote" data-i18n="index_testimonial_1_quote">"We went from a 45-minute CI/CD pipeline to an 18-second Concreto deploy. The team didn't believe it until they saw the build logs."</div>
+      <div class="testimonial-footer">
+        <div class="testimonial-avatar">MK</div>
+        <div>
+          <div class="testimonial-name">Marcus K.</div>
+          <div class="testimonial-role">CTO, Accelify</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="--reveal-delay:80ms">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote" data-i18n="index_testimonial_2_quote">"The rollback feature alone is worth it. We've recovered from broken deploys in under 10 seconds. No drama, just a click."</div>
+      <div class="testimonial-footer">
+        <div class="testimonial-avatar">PR</div>
+        <div>
+          <div class="testimonial-name">Priya R.</div>
+          <div class="testimonial-role">Lead Engineer, Stackfront</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="--reveal-delay:160ms">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote" data-i18n="index_testimonial_3_quote">"I'm a solo founder. Concreto gives me the infra confidence of a full DevOps team at a fraction of the cost. My first deploy took under 2 minutes."</div>
+      <div class="testimonial-footer">
+        <div class="testimonial-avatar">JL</div>
+        <div>
+          <div class="testimonial-name">Jordan L.</div>
+          <div class="testimonial-role">Founder, Driftwork</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA SECTION -->
+  <div class="cta-section reveal">
+    <div class="cta-card">
+      <div class="cta-title" data-i18n="index_cta_title">Ready to deploy your first project?</div>
+      <div class="cta-sub" data-i18n="index_cta_sub">Deploy smarter with Concreto's Kubernetes-backed hosting. Free tier includes 3 applications and 50 deployments per month.</div>
+      <div class="cta-actions">
+        <a class="btn-cta-primary" href="register.html" data-nav data-i18n="index_cta_primary">Create free account</a>
+        <a class="btn-cta-secondary" href="pricing.html" data-nav data-i18n="index_cta_secondary">View pricing</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <a class="footer-logo" href="index.html" data-nav>
+      <img class="nav-logo-img" style="width:20px;height:20px;" src="concreto-hosting-logo%20(2).svg" alt="" />
+      Concreto
+    </a>
+    <div class="footer-links">
+      <a class="footer-link" href="docs.html" data-nav data-i18n="nav_docs">Docs</a>
+      <a class="footer-link" href="pricing.html" data-nav data-i18n="nav_pricing">Pricing</a>
+      <a class="footer-link" href="status.html" data-nav>Status</a>
+      <a class="footer-link" href="security.html" data-nav>Security</a>
+      <a class="footer-link" href="privacy.html" data-nav>Privacy</a>
+      <a class="footer-link" href="terms.html" data-nav>Terms</a>
+      <a class="footer-link" href="contact.html" data-nav>Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 Concreto, Inc.</div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+<script>
+/* ── 3D SERVICES GLOBE ───────────────────────────────────── */
+(function () {
+  'use strict';
+
+  var BASE = [
+    { name: 'Docker',     src: 'https://cdn.simpleicons.org/docker/2496ED' },
+    { name: 'Kubernetes', src: 'https://cdn.simpleicons.org/kubernetes/326CE5' },
+    { name: 'Proxmox',    src: 'https://cdn.simpleicons.org/proxmox/E57000' },
+    { name: 'Terraform',  src: 'https://cdn.simpleicons.org/terraform/7B42BC' },
+    { name: 'Ansible',    src: 'https://cdn.simpleicons.org/ansible/EE0000' },
+    { name: 'ArgoCD',     src: 'https://cdn.simpleicons.org/argo/EF7B4D' },
+    { name: 'NGINX',      src: 'https://cdn.simpleicons.org/nginx/009639' },
+    { name: 'Prometheus', src: 'https://cdn.simpleicons.org/prometheus/E6522C' },
+    { name: 'Grafana',    src: 'https://cdn.simpleicons.org/grafana/F46800' },
+    { name: 'Loki',       src: 'https://cdn.simpleicons.org/grafana/007A73' },
+    { name: 'OPNsense',   src: 'https://cdn.simpleicons.org/opnsense/D94F00' },
+    { name: 'Bash',       src: 'https://cdn.simpleicons.org/gnubash/4EAA25' },
+    { name: 'NFS',        src: null }
+  ];
+
+  /* 3× repetition → 39 nodes for a dense, full-looking sphere */
+  var SERVICES = [];
+  for (var r = 0; r < 3; r++) BASE.forEach(function (s) { SERVICES.push(s); });
+
+  var sphere = document.getElementById('globeSphere');
+  var wrap   = document.getElementById('globeWrap');
+  if (!sphere || !wrap) return;
+
+  var GOLDEN = Math.PI * (1 + Math.sqrt(5));
+  var N      = SERVICES.length;   /* 39 */
+  var nodes  = [];
+
+  function buildGlobe() {
+    var R = (wrap.offsetWidth || 560) * 0.42;
+
+    /* ── Latitude rings at ±60°, ±30°, 0° ── */
+    [-60, -30, 0, 30, 60].forEach(function (latDeg) {
+      var lat   = latDeg * Math.PI / 180;
+      var ringR = R * Math.cos(lat);
+      var ringH = R * Math.sin(lat);
+      var d     = ringR * 2;
+      var el    = document.createElement('div');
+      el.className = 'globe-ring';
+      el.style.cssText =
+        'width:' + d + 'px;height:' + d + 'px;' +
+        'margin-top:' + (-ringR) + 'px;margin-left:' + (-ringR) + 'px;' +
+        'transform:rotateX(90deg) translateZ(' + ringH + 'px);';
+      sphere.appendChild(el);
+    });
+
+    /* ── Meridians at 0°, 60°, 120° ── */
+    [0, 60, 120].forEach(function (lonDeg) {
+      var d  = R * 2;
+      var el = document.createElement('div');
+      el.className = 'globe-meridian';
+      el.style.cssText =
+        'width:' + d + 'px;height:' + d + 'px;' +
+        'margin-top:' + (-R) + 'px;margin-left:' + (-R) + 'px;' +
+        'transform:rotateY(' + lonDeg + 'deg);';
+      sphere.appendChild(el);
+    });
+
+    /* ── Decorative glowing dots (constellation fill) ── */
+    var DOTS = 55;
+    for (var p = 0; p < DOTS; p++) {
+      var yd   = 1 - (2 * p + 1) / DOTS;
+      var rd   = Math.sqrt(Math.max(0, 1 - yd * yd));
+      var td   = GOLDEN * (p + 0.618);          /* offset to sit between service nodes */
+      var xd   = rd * Math.cos(td);
+      var zd   = rd * Math.sin(td);
+      var latD = Math.asin(yd)      * 180 / Math.PI;
+      var lonD = Math.atan2(xd, zd) * 180 / Math.PI;
+      var dot  = document.createElement('div');
+      dot.className = 'globe-dot';
+      dot.style.transform = 'rotateY(' + lonD + 'deg) rotateX(' + latD + 'deg) translateZ(' + R + 'px)';
+      sphere.appendChild(dot);
+      nodes.push({ el: dot, x: xd, y: yd, z: zd });
+    }
+
+    /* ── Service nodes ── */
+    SERVICES.forEach(function (svc, i) {
+      var yv    = 1 - (2 * i + 1) / N;
+      var rv    = Math.sqrt(Math.max(0, 1 - yv * yv));
+      var theta = GOLDEN * i;
+      var xv    = rv * Math.cos(theta);
+      var zv    = rv * Math.sin(theta);
+      var lat   = Math.asin(yv)      * 180 / Math.PI;
+      var lon   = Math.atan2(xv, zv) * 180 / Math.PI;
+
+      var node = document.createElement('div');
+      node.className = 'globe-node';
+      node.style.transform =
+        'rotateY(' + lon + 'deg) rotateX(' + lat + 'deg) translateZ(' + R + 'px)';
+
+      var chip = document.createElement('div');
+      chip.className = 'globe-node-chip';
+
+      if (svc.src) {
+        var img = document.createElement('img');
+        img.src = svc.src;
+        img.alt = svc.name;
+        img.loading = 'lazy';
+        img.onerror = (function (s, c) {
+          return function () {
+            c.innerHTML = '<span class="globe-node-fallback">' + s.name.slice(0, 3).toUpperCase() + '</span>';
+          };
+        }(svc, chip));
+        chip.appendChild(img);
+      } else {
+        chip.innerHTML =
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"' +
+          ' stroke="#9B9B96" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          '<rect x="2" y="4" width="20" height="7" rx="2"/>' +
+          '<rect x="2" y="13" width="20" height="7" rx="2"/>' +
+          '<circle cx="18" cy="7.5" r="1.2" fill="#9B9B96" stroke="none"/>' +
+          '<circle cx="18" cy="16.5" r="1.2" fill="#9B9B96" stroke="none"/></svg>';
+      }
+
+      var label = document.createElement('div');
+      label.className = 'globe-node-label';
+      label.textContent = svc.name;
+
+      node.appendChild(chip);
+      node.appendChild(label);
+      sphere.appendChild(node);
+      nodes.push({ el: node, x: xv, y: yv, z: zv });
+    });
+  }
+
+  buildGlobe();
+
+  var rotX = 12, rotY = 0;
+  var dragging = false;
+  var lastMX = 0, lastMY = 0;
+  var velX = 0, velY = 0;
+  var autoSpin = true;
+  var resumeTimer;
+
+  function applyTransform() {
+    sphere.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+  }
+
+  function updateDepths() {
+    var rx = rotX * Math.PI / 180, ry = rotY * Math.PI / 180;
+    var cosX = Math.cos(rx), sinX = Math.sin(rx);
+    var cosY = Math.cos(ry), sinY = Math.sin(ry);
+    nodes.forEach(function (n) {
+      var x1 = n.x * cosY + n.z * sinY;
+      var y1 = n.y;
+      var z1 = -n.x * sinY + n.z * cosY;
+      var z2 = y1 * sinX + z1 * cosX;
+      n.el.style.opacity = Math.max(0, Math.min(1, (z2 + 0.4) / 1.4));
+    });
+  }
+
+  wrap.addEventListener('mousedown', function (e) {
+    dragging = true; autoSpin = false; clearTimeout(resumeTimer);
+    lastMX = e.clientX; lastMY = e.clientY; velX = velY = 0; e.preventDefault();
+  });
+  document.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - lastMX, dy = e.clientY - lastMY;
+    rotY += dx * 0.4; rotX = Math.max(-80, Math.min(80, rotX - dy * 0.4));
+    velX = dx * 0.4; velY = dy * 0.4; lastMX = e.clientX; lastMY = e.clientY;
+  });
+  document.addEventListener('mouseup', function () {
+    if (!dragging) return; dragging = false;
+    resumeTimer = setTimeout(function () { autoSpin = true; }, 2500);
+  });
+
+  wrap.addEventListener('touchstart', function (e) {
+    dragging = true; autoSpin = false; clearTimeout(resumeTimer);
+    lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY; velX = velY = 0;
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (!dragging) return;
+    var dx = e.touches[0].clientX - lastMX, dy = e.touches[0].clientY - lastMY;
+    rotY += dx * 0.4; rotX = Math.max(-80, Math.min(80, rotX - dy * 0.4));
+    velX = dx * 0.4; velY = dy * 0.4;
+    lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function () {
+    if (!dragging) return; dragging = false;
+    resumeTimer = setTimeout(function () { autoSpin = true; }, 2500);
+  });
+
+  function tick() {
+    if (!dragging) {
+      if (autoSpin) { rotY += 0.12; }
+      else { velX *= 0.92; velY *= 0.92; rotY += velX; rotX = Math.max(-80, Math.min(80, rotX - velY)); }
+    }
+    applyTransform();
+    updateDepths();
+    requestAnimationFrame(tick);
+  }
+  tick();
+}());
+</script>
+<script>
+(function () {
+  var overlay    = document.getElementById('intro-overlay');
+  if (!overlay) return;
+  var navLogo    = document.querySelector('.nav-logo');
+  var wordWrap   = document.getElementById('intro-word-wrap');
+  var accentLine = document.getElementById('intro-accent-line');
+  var tagline    = document.getElementById('intro-tagline');
+  var statusLine = document.getElementById('intro-status');
+  var skipHint   = document.getElementById('intro-skip');
+  var constellation = document.getElementById('intro-constellation');
+  var dividers   = overlay.querySelectorAll('.intro-divider-hl');
+  var done       = false;
+
+  if (sessionStorage.getItem('ph_intro_seen')) {
+    overlay.remove();
+    return;
+  }
+  sessionStorage.setItem('ph_intro_seen', '1');
+
+  var nodes = [
+    ['12%', '22%', '7px', 120], ['24%', '70%', '5px', 260],
+    ['37%', '18%', '4px', 390], ['63%', '20%', '6px', 210],
+    ['78%', '34%', '5px', 340], ['84%', '72%', '7px', 480],
+    ['18%', '52%', '4px', 560], ['68%', '78%', '4px', 640]
+  ];
+  nodes.forEach(function (node) {
+    var dot = document.createElement('span');
+    dot.className = 'intro-node';
+    dot.style.setProperty('--x', node[0]);
+    dot.style.setProperty('--y', node[1]);
+    dot.style.setProperty('--s', node[2]);
+    dot.style.setProperty('--d', node[3] + 'ms');
+    constellation.appendChild(dot);
+  });
+
+  for (var p = 0; p < 28; p += 1) {
+    var particle = document.createElement('span');
+    var angle = (Math.PI * 2 * p) / 28;
+    var distance = 120 + (p % 7) * 28;
+    particle.className = 'intro-particle';
+    particle.style.setProperty('--s', (2 + (p % 4)) + 'px');
+    particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+    particle.style.setProperty('--ty', Math.sin(angle) * distance * 0.64 + 'px');
+    particle.style.setProperty('--d', (520 + (p % 9) * 38) + 'ms');
+    constellation.appendChild(particle);
+  }
+
+  /* build letter spans - staggered slam-up with skew */
+  var LETTER_START   = 500;
+  var LETTER_STAGGER = 58;
+  'CONCRETO'.split('').forEach(function (ch, i) {
+    var span = document.createElement('span');
+    span.className = 'intro-letter';
+    span.textContent = ch;
+    span.style.animation =
+      'introLetterIn 0.66s cubic-bezier(0.16,1,0.3,1) ' + (LETTER_START + i * LETTER_STAGGER) + 'ms forwards';
+    wordWrap.appendChild(span);
+  });
+
+  /* accent line sweep after last letter lands */
+  var lineStart = LETTER_START + 7 * LETTER_STAGGER + 250;
+  setTimeout(function () {
+    accentLine.style.animation = 'introLineIn 0.65s cubic-bezier(0.22,1,0.36,1) forwards';
+  }, lineStart);
+
+  /* flanking dividers */
+  setTimeout(function () {
+    dividers.forEach(function (el) {
+      el.style.transition = 'width 0.42s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease';
+      el.style.width = '72px';
+      el.style.opacity = '1';
+    });
+  }, lineStart + 50);
+
+  /* tagline */
+  setTimeout(function () {
+    if (tagline) {
+      tagline.style.transition = 'opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1)';
+      tagline.style.opacity = '1';
+      tagline.style.transform = 'translateY(0)';
+    }
+  }, lineStart + 420);
+
+  setTimeout(function () {
+    if (statusLine) {
+      statusLine.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1)';
+      statusLine.style.opacity = '1';
+      statusLine.style.transform = 'translateY(0)';
+    }
+  }, lineStart + 760);
+
+  /* skip hint */
+  setTimeout(function () {
+    if (skipHint) {
+      skipHint.style.transition = 'opacity 0.6s ease';
+      skipHint.style.opacity = '0.45';
+    }
+  }, lineStart + 1200);
+
+  /* auto exit */
+  var exitTimer = setTimeout(zoomOut, lineStart + 2300);
+
+  /* click anywhere to skip the intro */
+  overlay.addEventListener('click', function () {
+    clearTimeout(exitTimer);
+    zoomOut();
+  });
+
+  function zoomOut() {
+    if (done) return;
+    done = true;
+    var content = document.getElementById('intro-content');
+    if (content) {
+      content.style.transition = 'transform 0.72s cubic-bezier(0.16,1,0.3,1), opacity 0.42s ease, filter 0.42s ease';
+      content.style.transform  = 'scale(1.18) translateY(-22px)';
+      content.style.opacity    = '0';
+      content.style.filter     = 'blur(5px)';
+    }
+    overlay.style.transition = 'opacity 0.72s ease 0.12s, transform 0.72s cubic-bezier(0.16,1,0.3,1) 0.12s';
+    overlay.style.opacity    = '0';
+    overlay.style.transform  = 'scale(1.02)';
+    setTimeout(finish, 920);
+  }
+
+  function finish() {
+    overlay.remove();
+  }
+}());
+</script>
+</body>
 </html>

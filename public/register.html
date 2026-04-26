@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="register_title">Create account — Concreto</title>
+<meta name="description" content="Create your Concreto account and start shipping applications on Kubernetes with safer, faster deployment workflows." />
+<meta name="robots" content="noindex,follow" />
+<link rel="canonical" href="https://concreto.run/register" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Concreto" />
+<meta property="og:title" content="Create account — Concreto" />
+<meta property="og:description" content="Get started with Concreto and deploy your first app in minutes." />
+<meta property="og:url" content="https://concreto.run/register" />
+<meta property="og:image" content="https://concreto.run/social-preview.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Create account — Concreto" />
+<meta name="twitter:description" content="Get started with Concreto in minutes." />
+<meta name="twitter:image" content="https://concreto.run/social-preview.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
+<link rel="icon" href="favicon_io/favicon.ico" />
+<link rel="manifest" href="favicon_io/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html" data-nav data-i18n="nav_product">Product</a>
+    <a class="nav-link" href="docs.html" data-nav data-i18n="nav_docs">Docs</a>
+    <a class="nav-link" href="pricing.html" data-nav data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link lang-toggle" id="lang-toggle" type="button" aria-label="Switch language">EN</button>
+    <div id="nav-auth-btns" style="display:flex;align-items:center;gap:8px;">
+      <a class="nav-link" href="login.html" data-nav data-i18n="nav_login">Log in</a>
+      <a class="nav-cta" href="register.html" data-nav data-i18n="nav_get_started">Get started</a>
+    </div>
+    <div id="nav-user" class="hidden" style="display:flex;align-items:center;gap:10px;">
+      <a class="nav-link" href="dashboard.html" data-nav data-i18n="nav_dashboard">Dashboard</a>
+      <div class="avatar" onclick="logout()" title="Log out" data-i18n-title="nav_logout_title">SG</div>
+    </div>
+    <script>(function(){var l=!!localStorage.getItem('ph_token');var a=document.getElementById('nav-auth-btns');var u=document.getElementById('nav-user');if(a)a.style.display=l?'none':'flex';if(u)u.style.display=l?'flex':'none';})()</script>
+  </div>
+</nav>
+
+<div class="page-wrap" style="padding-top: var(--nav-h);">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-title" data-i18n="register_create_account">Create your account</div>
+        <div class="auth-sub" data-i18n="register_sub">Start deploying in under a minute</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="register_full_name_label">Full name</label>
+        <input class="form-input" type="text" id="register-name" placeholder="Simon Gielen" data-i18n-placeholder="register_full_name_placeholder" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="register_work_email_label">Work email</label>
+        <input class="form-input" type="email" id="register-email" placeholder="you@company.com" data-i18n-placeholder="register_work_email_placeholder" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="register_password_label">Password</label>
+        <input class="form-input" type="password" id="register-pass" placeholder="Min. 8 characters" data-i18n-placeholder="register_password_placeholder" />
+        <div class="form-hint" data-i18n="register_password_hint">Use at least 8 characters with a mix of letters and numbers.</div>
+      </div>
+      <button class="form-submit" onclick="doRegister()" data-i18n="register_submit">Create account</button>
+      <div class="auth-divider" data-i18n="register_or">or</div>
+      <div class="auth-link">
+        <span data-i18n="register_have_account">Already have an account?</span> <a href="login.html" data-nav data-i18n="register_sign_in">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a class="footer-logo" href="index.html" data-nav>
+      <img class="nav-logo-img" style="width:20px;height:20px;" src="concreto-hosting-logo%20(2).svg" alt="" />
+      Concreto
+    </a>
+    <div class="footer-links">
+      <a class="footer-link" href="docs.html" data-nav>Docs</a>
+      <a class="footer-link" href="pricing.html" data-nav>Pricing</a>
+      <a class="footer-link" href="status.html" data-nav>Status</a>
+      <a class="footer-link" href="security.html" data-nav>Security</a>
+      <a class="footer-link" href="privacy.html" data-nav>Privacy</a>
+      <a class="footer-link" href="terms.html" data-nav>Terms</a>
+      <a class="footer-link" href="contact.html" data-nav>Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 Concreto, Inc.</div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

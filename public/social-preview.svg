@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F7F5" />
+      <stop offset="1" stop-color="#E7EEFF" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0A6EFF" />
+      <stop offset="1" stop-color="#6B48FF" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1000" cy="70" r="220" fill="#DCE8FF" fill-opacity="0.6" />
+  <circle cx="120" cy="560" r="180" fill="#E7ECFA" />
+  <rect x="86" y="86" width="56" height="56" rx="14" fill="url(#accent)" />
+  <path d="M102 114h24M102 100h24M102 128h16" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+  <text x="166" y="126" fill="#111110" font-size="46" font-family="Geist, Arial, sans-serif" font-weight="600">Concreto</text>
+  <text x="90" y="260" fill="#111110" font-size="78" font-family="Geist, Arial, sans-serif" font-weight="600">Ship Faster.</text>
+  <text x="90" y="338" fill="#2F3A52" font-size="78" font-family="Geist, Arial, sans-serif" font-weight="500">Deploy with Confidence.</text>
+  <text x="90" y="412" fill="#5E6473" font-size="34" font-family="Geist, Arial, sans-serif" font-weight="400">Kubernetes-backed deployments, rollback safety, and production observability.</text>
+</svg>

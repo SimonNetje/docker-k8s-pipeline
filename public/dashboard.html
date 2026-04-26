@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="dashboard_title">Dashboard — Concreto</title>
+<meta name="description" content="Concreto dashboard for managing applications, deployment history, and runtime metrics." />
+<meta name="robots" content="noindex,follow" />
+<link rel="canonical" href="https://concreto.run/dashboard" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Concreto" />
+<meta property="og:title" content="Dashboard — Concreto" />
+<meta property="og:description" content="Manage your applications and deployments in Concreto." />
+<meta property="og:url" content="https://concreto.run/dashboard" />
+<meta property="og:image" content="https://concreto.run/social-preview.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Dashboard — Concreto" />
+<meta name="twitter:description" content="Manage your Concreto projects." />
+<meta name="twitter:image" content="https://concreto.run/social-preview.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
+<link rel="icon" href="favicon_io/favicon.ico" />
+<link rel="manifest" href="favicon_io/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+<style>
+  /* ── DASHBOARD LAYOUT ────────────────────────── */
+  .dash-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - var(--nav-h));
+  }
+  @media(max-width:720px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .dash-sidebar { display: none; }
+  }
+
+  /* sidebar */
+  .dash-sidebar {
+    border-right: 1px solid var(--border);
+    padding: 24px 0 80px;
+    position: sticky; top: var(--nav-h);
+    height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+  }
+  .dash-sidebar-section { padding: 0 12px; }
+  .dash-sidebar-heading {
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .09em; font-family: var(--mono);
+    padding: 6px 8px; margin-bottom: 4px;
+  }
+  .dash-sidebar-link {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; font-size: 13px; color: var(--text-2);
+    border-radius: var(--radius); cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    border: none; background: none; font-family: var(--font);
+    width: 100%; text-align: left;
+  }
+  .dash-sidebar-link:hover { background: var(--border); color: var(--text-1); }
+  .dash-sidebar-link.is-active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+
+  /* main */
+  .dash-main { padding: 40px 48px 80px; max-width: 900px; }
+  @media(max-width:900px) { .dash-main { padding: 32px 24px 60px; } }
+
+  .dash-view-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .dash-title { font-size: 22px; font-weight: 600; letter-spacing: -.3px; }
+  .dash-sub   { font-size: 14px; color: var(--text-2); margin-top: 2px; }
+
+  /* create form */
+  .dash-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 22px 24px; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .dash-card-title { font-size: 14px; font-weight: 600; }
+  .form-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
+  @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+  .form-row .form-group { margin-bottom: 0; }
+
+  /* deploy button in table */
+  .btn-deploy-sm {
+    padding: 5px 14px; font-size: 12px; font-weight: 500;
+    background: var(--text-1); color: #fff; border-radius: var(--radius);
+    border: none; cursor: pointer; font-family: var(--font);
+    transition: opacity var(--transition); white-space: nowrap;
+  }
+  .btn-deploy-sm:hover { opacity: .82; }
+  .btn-deploy-sm:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* idle status */
+  .status-idle { background: var(--border); color: var(--text-3); }
+  .status-idle::before { background: var(--text-3); }
+
+  /* source toggle */
+  .source-toggle {
+    display: flex;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+    gap: 2px;
+    width: fit-content;
+    margin-top: 22px;
+  }
+  .source-tab-pill-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  .source-pill {
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    transform: translate(-50%, -100%);
+    font-size: 9px;
+    font-family: var(--mono);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 1px 8px;
+    line-height: 1.25;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .source-tab {
+    padding: 5px 16px; font-size: 13px; font-weight: 500;
+    border: none; background: none;
+    border-radius: calc(var(--radius) - 2px);
+    cursor: pointer; color: var(--text-2); font-family: var(--font);
+    transition: background var(--transition), color var(--transition);
+  }
+  .source-tab.is-active {
+    background: var(--surface); color: var(--text-1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+
+  /* zip drop zone */
+  .zip-drop-zone {
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 28px 20px; text-align: center; cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    color: var(--text-2); font-size: 13px; user-select: none;
+  }
+  .zip-drop-zone:hover, .zip-drop-zone.drag-over {
+    border-color: var(--accent); background: var(--accent-bg); color: var(--text-1);
+  }
+  .zip-drop-icon { margin-bottom: 8px; color: var(--text-3); }
+  .zip-selected { font-family: var(--mono); font-size: 12px; color: var(--text-1); font-weight: 500; }
+
+  /* empty cell */
+  .td-empty { text-align: center; color: var(--text-3); padding: 32px; font-size: 13px; }
+
+  /* table */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .table-head {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .table-head-title { font-size: 14px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    padding: 10px 20px; text-align: left;
+    font-size: 11px; font-weight: 500; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .07em; font-family: var(--mono);
+    border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  td { padding: 12px 20px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .td-mono { font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+
+  /* deploy progress */
+  .progress-section {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 22px 24px; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .progress-header { display: flex; align-items: center; justify-content: space-between; }
+  .progress-title  { font-size: 14px; font-weight: 500; }
+  .progress-pct    { font-size: 14px; font-weight: 600; font-family: var(--mono); }
+  .progress-bar-bg { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width .4s ease; }
+  .progress-log {
+    font-family: var(--mono); font-size: 12px; color: var(--text-2);
+    background: var(--bg); border-radius: var(--radius); padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+    max-height: 140px; overflow-y: auto;
+  }
+  .log-line-ok  { color: var(--success); }
+  .log-line-dim { color: var(--text-3); }
+
+  /* metrics */
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media(max-width:600px) { .metrics-grid { grid-template-columns: 1fr; } }
+  .metric-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 20px 22px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .metric-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .metric-app-name { font-size: 14px; font-weight: 600; }
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .metric-item { display: flex; flex-direction: column; gap: 4px; }
+  .metric-label {
+    font-size: 11px; font-weight: 500; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .06em; font-family: var(--mono);
+  }
+  .metric-value { font-size: 20px; font-weight: 600; letter-spacing: -.02em; font-family: var(--mono); }
+
+  /* ── MOBILE NAV TABS ────────────────────────────── */
+  .dash-mobile-nav {
+    display: none;
+    position: sticky; top: var(--nav-h); z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dash-mobile-nav::-webkit-scrollbar { display: none; }
+  .dash-mobile-tab {
+    padding: 12px 16px; font-size: 13px; font-weight: 500;
+    border: none; background: none; cursor: pointer;
+    color: var(--text-2); font-family: var(--font);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color var(--transition), border-color var(--transition);
+    margin-bottom: -1px;
+  }
+  .dash-mobile-tab:hover { color: var(--text-1); }
+  .dash-mobile-tab.is-active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── MOBILE RESPONSIVE ──────────────────────────── */
+  @media (max-width: 720px) {
+    .dash-mobile-nav { display: flex; }
+    .dash-main { padding: 24px 16px 60px; }
+  }
+
+  @media (max-width: 640px) {
+    .dash-view-header { flex-direction: column; gap: 12px; }
+    .dash-view-header .btn-primary { align-self: flex-start; }
+    .dash-title { font-size: 20px; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 500px; }
+    .metrics-grid { gap: 12px; }
+    .metric-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .dash-main { padding: 20px 12px 60px; }
+    .metric-value { font-size: 18px; }
+    .source-toggle { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html" data-nav data-i18n="nav_product">Product</a>
+    <a class="nav-link" href="docs.html" data-nav data-i18n="nav_docs">Docs</a>
+    <a class="nav-link" href="pricing.html" data-nav data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link lang-toggle" id="lang-toggle" type="button" aria-label="Switch language">EN</button>
+    <div id="nav-auth-btns" style="display:flex;align-items:center;gap:8px;">
+      <a class="nav-link" href="login.html" data-nav data-i18n="nav_login">Log in</a>
+      <a class="nav-cta" href="register.html" data-nav data-i18n="nav_get_started">Get started</a>
+    </div>
+    <div id="nav-user" class="hidden" style="display:flex;align-items:center;gap:10px;">
+      <a class="nav-link" href="dashboard.html" data-nav data-i18n="nav_dashboard">Dashboard</a>
+      <button class="nav-link" type="button" onclick="logout()" data-i18n="nav_logout_title" data-nav-logout="1">Log out</button>
+      <div class="avatar" onclick="logout()" title="Log out" data-i18n-title="nav_logout_title">SG</div>
+    </div>
+    <script>(function(){var l=!!localStorage.getItem('ph_token');var a=document.getElementById('nav-auth-btns');var u=document.getElementById('nav-user');if(a)a.style.display=l?'none':'flex';if(u)u.style.display=l?'flex':'none';})()</script>
+  </div>
+</nav>
+
+<div class="page-wrap" style="padding-top: var(--nav-h);">
+
+<!-- Mobile navigation tabs (shown instead of sidebar on small screens) -->
+<nav class="dash-mobile-nav" aria-label="Dashboard sections">
+  <button class="dash-mobile-tab is-active" data-view="applications" onclick="showView('applications')">Applications</button>
+  <button class="dash-mobile-tab" data-view="deployments" onclick="showView('deployments')">Deployments</button>
+  <button class="dash-mobile-tab" data-view="metrics" onclick="showView('metrics')">Metrics</button>
+</nav>
+
+<div class="dash-layout">
+
+  <!-- Sidebar -->
+  <aside class="dash-sidebar">
+    <div class="dash-sidebar-section">
+      <div class="dash-sidebar-heading">Platform</div>
+      <button class="dash-sidebar-link is-active" data-view="applications" onclick="showView('applications')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        Applications
+      </button>
+      <button class="dash-sidebar-link" data-view="deployments" onclick="showView('deployments')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1v8M7 1L4.5 3.5M7 1L9.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 10v1.5A1.5 1.5 0 003.5 13h7A1.5 1.5 0 0012 11.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Deployments
+      </button>
+      <button class="dash-sidebar-link" data-view="metrics" onclick="showView('metrics')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 10l3-4 3 2 3-5 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Metrics
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <main class="dash-main">
+
+    <!-- ── Applications ── -->
+    <div id="view-applications">
+      <div class="dash-view-header">
+        <div>
+          <div class="dash-title">Applications</div>
+          <div class="dash-sub">Manage your hosted applications</div>
+        </div>
+        <button class="btn-primary" id="btn-new-app" onclick="toggleCreateForm()">+ New application</button>
+      </div>
+
+      <div id="create-app-form" style="display:none;">
+        <div class="dash-card">
+          <div class="dash-card-title">New application</div>
+          <div class="form-group">
+            <label class="form-label">Application name</label>
+            <input class="form-input" id="app-name" placeholder="my-app" />
+          </div>
+          <div>
+            <label class="form-label" style="display:block;margin-bottom:8px;">Source</label>
+            <div class="source-toggle">
+              <div class="source-tab-pill-wrap">
+                <span class="source-pill" data-i18n="dashboard_recommended">Recommended</span>
+                <button class="source-tab is-active" id="tab-github" onclick="setSourceMode('github')" data-i18n="dashboard_source_github">GitHub URL</button>
+              </div>
+              <button class="source-tab" id="tab-zip" onclick="setSourceMode('zip')">Upload ZIP</button>
+            </div>
+          </div>
+          <div id="source-github">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Repository URL</label>
+              <input class="form-input" id="app-repo" type="url" placeholder="https://github.com/you/my-app" />
+            </div>
+          </div>
+          <div id="source-zip" style="display:none;">
+            <label class="form-label" style="display:block;margin-bottom:8px;">Project ZIP file</label>
+            <div class="zip-drop-zone" id="zip-drop-zone"
+                 onclick="document.getElementById('app-zip').click()"
+                 ondragover="event.preventDefault();this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="handleZipDrop(event)">
+              <input type="file" id="app-zip" accept=".zip" style="display:none;" onchange="handleZipSelect(this)" />
+              <div class="zip-drop-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 22h16a2 2 0 002-2V7.5L14.5 2H6a2 2 0 00-2 2v4"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                  <path d="M2 15l3-3 3 3"/><path d="M5 12v7"/>
+                </svg>
+              </div>
+              <div id="zip-drop-label">Drop ZIP here or <strong>click to browse</strong></div>
+            </div>
+          </div>
+          <div><button class="btn-primary" onclick="submitCreateApp()">Create application</button></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-head-title">Your applications</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Repository</th>
+              <th>Status</th>
+              <th>Last deploy</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="apps-tbody">
+            <tr><td colspan="5" class="td-empty">No applications yet. Create your first one above.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Deployments ── -->
+    <div id="view-deployments" style="display:none;">
+      <div class="dash-view-header">
+        <div>
+          <div class="dash-title">Deployments</div>
+          <div class="dash-sub">Deployment history across all applications</div>
+        </div>
+      </div>
+
+      <div id="deploy-active-wrap" style="display:none;">
+        <div class="progress-section">
+          <div class="progress-header">
+            <div class="progress-title" id="deploy-title">Building…</div>
+            <div class="progress-pct" id="deploy-pct">0%</div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="deploy-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-log" id="deploy-log"></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-head-title">All deployments</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>Status</th>
+              <th>Started</th>
+              <th>Last log</th>
+            </tr>
+          </thead>
+          <tbody id="deps-tbody">
+            <tr><td colspan="4" class="td-empty">No deployments yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Metrics ── -->
+    <div id="view-metrics" style="display:none;">
+      <div class="dash-view-header">
+        <div>
+          <div class="dash-title">Metrics</div>
+          <div class="dash-sub">Real-time resource usage — updates every 2 seconds</div>
+        </div>
+      </div>
+      <div class="metrics-grid" id="metrics-container">
+        <div class="td-empty" style="grid-column:1/-1;padding:48px;">No applications yet. Create an application first.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<footer class="site-footer">
+  <a class="footer-logo" href="index.html" data-nav>
+    <img class="nav-logo-img" style="width:20px;height:20px;" src="concreto-hosting-logo%20(2).svg" alt="" />
+    Concreto
+  </a>
+  <div class="footer-links">
+    <a class="footer-link" href="docs.html" data-nav>Docs</a>
+    <a class="footer-link" href="pricing.html" data-nav>Pricing</a>
+    <a class="footer-link" href="status.html" data-nav>Status</a>
+    <a class="footer-link" href="security.html" data-nav>Security</a>
+    <a class="footer-link" href="privacy.html" data-nav>Privacy</a>
+    <a class="footer-link" href="terms.html" data-nav>Terms</a>
+    <a class="footer-link" href="contact.html" data-nav>Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Concreto, Inc.</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/state.js"></script>
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
