@@ -1,0 +1,15 @@
+.git
+.github
+k8s
+
+Dockerfile
+README.md
+PROJECT_CONTEXT.md
+
+node_modules
+dist
+build
+coverage
+.env
+.env.*
+*.log

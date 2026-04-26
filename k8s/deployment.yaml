@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-k8s-pipeline
+  labels:
+    app.kubernetes.io/name: docker-k8s-pipeline
+    app.kubernetes.io/component: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: docker-k8s-pipeline
+      app.kubernetes.io/component: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: docker-k8s-pipeline
+        app.kubernetes.io/component: web
+    spec:
+      containers:
+        - name: docker-k8s-pipeline
+          image: docker.io/simonnetje/docker-k8s-pipeline:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
