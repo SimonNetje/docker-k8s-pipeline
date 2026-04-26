@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: docker-k8s-pipeline.example.com
+    - host: www.concretohosting.com
       http:
         paths:
           - path: /
