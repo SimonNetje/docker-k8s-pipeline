@@ -1,59 +1,59 @@
 var API = (function() {
-  function authHeaders() {
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    };
+  function demoResponse(value) {
+    return Promise.resolve(value);
   }
 
-  function handleResponse(res) {
-    return res.json().then(function(data) {
-      if (!res.ok) {
-        var err = new Error(data.error || 'Request failed');
-        err.status = res.status;
-        throw err;
-      }
-      return data;
-    });
+  function requireDemoAuth() {
+    if (isLoggedIn()) return null;
+    var err = new Error('Demo session expired');
+    err.status = 401;
+    return err;
   }
 
   function getApplications() {
-    return fetch(API_BASE + '/api/applications', { headers: authHeaders() })
-      .then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    return demoResponse(State.getApps());
   }
 
   function createApplication(data) {
-    return fetch(API_BASE + '/api/applications', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ name: data.name, repository_url: data.source.url })
-    }).then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    return demoResponse(State.addApp(data.name, data.source));
   }
 
   function getDeployments() {
-    return fetch(API_BASE + '/api/deployments', { headers: authHeaders() })
-      .then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    return demoResponse(State.getDeps());
   }
 
   function createDeployment(appId) {
-    return fetch(API_BASE + '/api/deployments', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ application_id: appId })
-    }).then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    return demoResponse(State.addDeployment(appId));
   }
 
   function getDeployment(id) {
-    return fetch(API_BASE + '/api/deployments/' + id, { headers: authHeaders() })
-      .then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    var deps = State.getDeps();
+    for (var i = 0; i < deps.length; i++) {
+      if (deps[i].id === id) return demoResponse(deps[i]);
+    }
+    var notFound = new Error('Deployment not found');
+    notFound.status = 404;
+    return Promise.reject(notFound);
   }
 
   function updateDeploymentStatus(id, status) {
-    return fetch(API_BASE + '/api/deployments/' + id + '/status', {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ status: status })
-    }).then(handleResponse);
+    var err = requireDemoAuth();
+    if (err) return Promise.reject(err);
+    var dep = State.updateDeployment(id, { status: status });
+    if (dep) return demoResponse(dep);
+    var notFound = new Error('Deployment not found');
+    notFound.status = 404;
+    return Promise.reject(notFound);
   }
 
   return {

@@ -1,4 +1,3 @@
-var API_BASE = '';
 
 // ── Auth state (persisted across pages) ──────────
 function getToken() { return localStorage.getItem('ph_token'); }
@@ -12,6 +11,16 @@ function clearAuth() {
   localStorage.removeItem('ph_token');
   localStorage.removeItem('ph_user');
   localStorage.removeItem('ph_logged_in');
+}
+
+function createDemoSession(email, name) {
+  var cleanEmail = (email || 'demo@concreto.run').trim();
+  var cleanName = (name || cleanEmail.split('@')[0] || 'Demo User').trim();
+  setAuth('demo-' + Date.now().toString(36), {
+    id: 'demo-user',
+    name: cleanName,
+    email: cleanEmail
+  });
 }
 
 // ── Language (English / Dutch) ───────────────────
@@ -580,19 +589,8 @@ function doLogin() {
 
   var btn = document.querySelector('.form-submit');
   if (btn) btn.disabled = true;
-
-  fetch(API_BASE + '/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: emailEl.value.trim(), password: passEl.value })
-  })
-  .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
-  .then(function(r) {
-    if (!r.ok) { showToast(r.data.error || 'Login failed'); if (btn) btn.disabled = false; return; }
-    setAuth(r.data.token, r.data.user);
-    navigate('dashboard.html', function() { showToast(t('toast_signed_in')); });
-  })
-  .catch(function() { showToast('Could not reach server'); if (btn) btn.disabled = false; });
+  createDemoSession(emailEl.value, null);
+  navigate('dashboard.html', function() { showToast(t('toast_signed_in')); });
 }
 
 function doRegister() {
@@ -605,19 +603,8 @@ function doRegister() {
 
   var btn = document.querySelector('.form-submit');
   if (btn) btn.disabled = true;
-
-  fetch(API_BASE + '/auth/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: nameEl.value.trim(), email: emailEl.value.trim(), password: passEl.value })
-  })
-  .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
-  .then(function(r) {
-    if (!r.ok) { showToast(r.data.error || 'Registration failed'); if (btn) btn.disabled = false; return; }
-    setAuth(r.data.token, r.data.user);
-    navigate('dashboard.html', function() { showToast(t('toast_account_created')); });
-  })
-  .catch(function() { showToast('Could not reach server'); if (btn) btn.disabled = false; });
+  createDemoSession(emailEl.value, nameEl.value);
+  navigate('dashboard.html', function() { showToast(t('toast_account_created')); });
 }
 
 function logout() {
