@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: docker-k8s-pipeline
-          image: docker.io/simonnetje/docker-k8s-pipeline:c82f46d949cb8f0f308d9be999d593cd9f7ea040
+          image: docker.io/simonnetje/docker-k8s-pipeline:6ec9afca8c492a215d6d0f5ee88be7296805977e
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
