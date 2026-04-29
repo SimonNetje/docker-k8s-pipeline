@@ -71,20 +71,26 @@ function handleZipDrop(event) {
 
 function submitCreateApp() {
   var name = (document.getElementById('app-name').value || '').trim();
-  if (!name) { showToast('Application name is required'); return; }
-
-  if (sourceMode === 'zip') {
-    showToast('ZIP upload coming soon — use a GitHub URL for now');
-    return;
-  }
+  if (!name) name = 'demo-app-' + (State.getApps().length + 1);
 
   var repo = (document.getElementById('app-repo').value || '').trim();
-  if (!repo) { showToast('Repository URL is required'); return; }
+  var source = { type: 'github', url: repo || 'https://github.com/demo/concreto-app' };
+  if (sourceMode === 'zip') {
+    var zipInput = document.getElementById('app-zip');
+    var zipName = zipInput && zipInput.files && zipInput.files[0]
+      ? zipInput.files[0].name
+      : 'demo-project.zip';
+    source = { type: 'zip', filename: zipName };
+  }
 
-  API.createApplication({ name: name, source: { type: 'github', url: repo } })
+  DemoData.createApplication({ name: name, source: source })
     .then(function() {
       document.getElementById('app-name').value = '';
       document.getElementById('app-repo').value = '';
+      var zipInput = document.getElementById('app-zip');
+      var zipLabel = document.getElementById('zip-drop-label');
+      if (zipInput) zipInput.value = '';
+      if (zipLabel) zipLabel.innerHTML = 'Drop ZIP here or <strong>click to browse</strong>';
       toggleCreateForm();
       renderApplications();
       showToast('Application "' + name + '" created');
@@ -100,7 +106,7 @@ function renderApplications() {
   var tbody = document.getElementById('apps-tbody');
   if (!tbody) return;
 
-  Promise.all([API.getApplications(), API.getDeployments()])
+  Promise.all([DemoData.getApplications(), DemoData.getDeployments()])
     .then(function(results) {
       var apps = results[0];
       var deps = results[1];
@@ -155,7 +161,7 @@ function renderApplications() {
 
 // ── Deploy ────────────────────────────────────────
 function deployApp(appId) {
-  API.createDeployment(appId)
+  DemoData.createDeployment(appId)
     .then(function(dep) {
       renderApplications();
       showView('deployments');
@@ -181,7 +187,7 @@ function simulateDeploy(dep) {
 
   function tick() {
     if (step >= DEPLOY_STEPS.length) {
-      API.updateDeploymentStatus(depId, 'running').then(function() {
+      DemoData.updateDeploymentStatus(depId, 'running').then(function() {
         delete _simState[depId];
         renderDeployments();
         renderApplications();
@@ -241,7 +247,7 @@ function renderDeployments() {
   var tbody = document.getElementById('deps-tbody');
   if (!tbody) return;
 
-  Promise.all([API.getDeployments(), API.getApplications()])
+  Promise.all([DemoData.getDeployments(), DemoData.getApplications()])
     .then(function(results) {
       var deps = results[0];
       var apps = results[1];
@@ -290,14 +296,14 @@ function renderMetrics() {
   var container = document.getElementById('metrics-container');
   if (!container) return;
 
-  API.getApplications()
+  DemoData.getApplications()
     .then(function(apps) {
       if (!apps.length) {
         container.innerHTML = '<div class="td-empty" style="grid-column:1/-1;padding:48px;">No applications yet. Create an application first.</div>';
         return;
       }
 
-      return API.getDeployments().then(function(deps) {
+      return DemoData.getDeployments().then(function(deps) {
         var lastDepMap = {};
         deps.forEach(function(d) {
           var existing = lastDepMap[d.application_id];
@@ -338,8 +344,8 @@ function renderMetrics() {
 }
 
 function updateMetrics() {
-  API.getApplications().then(function(apps) {
-    return API.getDeployments().then(function(deps) {
+  DemoData.getApplications().then(function(apps) {
+    return DemoData.getDeployments().then(function(deps) {
       var lastDepMap = {};
       deps.forEach(function(d) {
         var existing = lastDepMap[d.application_id];

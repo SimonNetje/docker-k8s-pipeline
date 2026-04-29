@@ -15,7 +15,7 @@ function clearAuth() {
 
 function createDemoSession(email, name) {
   var cleanEmail = (email || 'demo@concreto.run').trim();
-  var cleanName = (name || cleanEmail.split('@')[0] || 'Demo User').trim();
+  var cleanName = (name || 'Demo User').trim();
   setAuth('demo-' + Date.now().toString(36), {
     id: 'demo-user',
     name: cleanName,
@@ -583,27 +583,18 @@ function renderNav() {
 // ── Auth actions ──────────────────────────────────
 function doLogin() {
   var emailEl = document.getElementById('login-email');
-  var passEl  = document.getElementById('login-pass');
-  if (emailEl && !emailEl.value.trim()) { showToast(t('toast_email_required')); return; }
-  if (passEl  && !passEl.value.trim())  { showToast(t('toast_password_required')); return; }
-
   var btn = document.querySelector('.form-submit');
   if (btn) btn.disabled = true;
-  createDemoSession(emailEl.value, null);
+  createDemoSession(emailEl ? emailEl.value : '', null);
   navigate('dashboard.html', function() { showToast(t('toast_signed_in')); });
 }
 
 function doRegister() {
   var nameEl  = document.getElementById('register-name');
   var emailEl = document.getElementById('register-email');
-  var passEl  = document.getElementById('register-pass');
-  if (nameEl  && !nameEl.value.trim())    { showToast(t('toast_name_required')); return; }
-  if (emailEl && !emailEl.value.trim())   { showToast(t('toast_email_required')); return; }
-  if (passEl  && passEl.value.length < 8) { showToast(t('toast_password_min')); return; }
-
   var btn = document.querySelector('.form-submit');
   if (btn) btn.disabled = true;
-  createDemoSession(emailEl.value, nameEl.value);
+  createDemoSession(emailEl ? emailEl.value : '', nameEl ? nameEl.value : '');
   navigate('dashboard.html', function() { showToast(t('toast_account_created')); });
 }
 

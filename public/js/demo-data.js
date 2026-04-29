@@ -1,4 +1,4 @@
-var API = (function() {
+var DemoData = (function() {
   function demoResponse(value) {
     return Promise.resolve(value);
   }
