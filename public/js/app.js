@@ -13,16 +13,6 @@ function clearAuth() {
   localStorage.removeItem('ph_logged_in');
 }
 
-function createDemoSession(email, name) {
-  var cleanEmail = (email || 'demo@concreto.run').trim();
-  var cleanName = (name || 'Demo User').trim();
-  setAuth('demo-' + Date.now().toString(36), {
-    id: 'demo-user',
-    name: cleanName,
-    email: cleanEmail
-  });
-}
-
 // ── Language (English / Dutch) ───────────────────
 var LANG_KEY = 'ph_lang';
 var FALLBACK_LANG = 'en';
@@ -581,23 +571,6 @@ function renderNav() {
 }
 
 // ── Auth actions ──────────────────────────────────
-function doLogin() {
-  var emailEl = document.getElementById('login-email');
-  var btn = document.querySelector('.form-submit');
-  if (btn) btn.disabled = true;
-  createDemoSession(emailEl ? emailEl.value : '', null);
-  navigate('dashboard.html', function() { showToast(t('toast_signed_in')); });
-}
-
-function doRegister() {
-  var nameEl  = document.getElementById('register-name');
-  var emailEl = document.getElementById('register-email');
-  var btn = document.querySelector('.form-submit');
-  if (btn) btn.disabled = true;
-  createDemoSession(emailEl ? emailEl.value : '', nameEl ? nameEl.value : '');
-  navigate('dashboard.html', function() { showToast(t('toast_account_created')); });
-}
-
 function logout() {
   clearAuth();
   navigate('index.html', function() { showToast(t('toast_signed_out')); });

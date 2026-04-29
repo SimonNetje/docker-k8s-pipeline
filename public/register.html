@@ -73,7 +73,7 @@
         <input class="form-input" type="password" id="register-pass" placeholder="Min. 8 characters" data-i18n-placeholder="register_password_placeholder" />
         <div class="form-hint" data-i18n="register_password_hint">Use at least 8 characters with a mix of letters and numbers.</div>
       </div>
-      <button class="form-submit" onclick="doRegister()" data-i18n="register_submit">Create account</button>
+      <button class="form-submit" type="button" onclick="localStorage.setItem('ph_token','demo-session');localStorage.setItem('ph_user',JSON.stringify({id:'demo-user',name:'Demo User',email:'demo@concreto.run'}));window.location.href='dashboard.html';return false;" data-i18n="register_submit">Create account</button>
       <div class="auth-divider" data-i18n="register_or">or</div>
       <div class="auth-link">
         <span data-i18n="register_have_account">Already have an account?</span> <a href="login.html" data-nav data-i18n="register_sign_in">Sign in</a>
@@ -101,6 +101,6 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="js/app.js"></script>
+<script src="js/app.js?v=frontend-demo-2"></script>
 </body>
 </html>
