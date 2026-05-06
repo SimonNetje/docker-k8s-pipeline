@@ -326,9 +326,9 @@ def index() -> FileResponse:
 
 @app.get("/{page_name}")
 def html_page(page_name: str) -> FileResponse:
-    if "." in page_name:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    candidate = PUBLIC_DIR / f"{page_name}.html"
+    candidate = PUBLIC_DIR / page_name
+    if candidate.suffix != ".html":
+        candidate = PUBLIC_DIR / f"{page_name}.html"
     if not candidate.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return FileResponse(candidate)
