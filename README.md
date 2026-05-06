@@ -33,6 +33,6 @@ The manifests in `k8s/` define:
 - a `Deployment` with 1 replica, labels/selectors, port `8080`, health probes, and basic resource requests/limits.
 - a `ClusterIP` `Service` exposing port `8080` inside the cluster.
 - an `Ingress` routing HTTP traffic to the service. Replace `docker-k8s-pipeline.example.com` in `k8s/ingress.yaml` with the real domain before deploying publicly.
-- a `PersistentVolumeClaim` named `docker-k8s-pipeline-data` using the `nfs-client` StorageClass for `/data`.
+- a `PersistentVolumeClaim` named `docker-k8s-pipeline-data` using the `shared-hosting-storage` StorageClass for `/data`.
 
 The deployment runs one replica by default because SQLite is file-based. If your cluster uses a different NFS StorageClass name, update `storageClassName` in `k8s/pvc.yaml`. If you move to PostgreSQL or another shared database through `DATABASE_URL`, you can scale replicas safely.

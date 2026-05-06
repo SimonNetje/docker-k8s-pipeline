@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: docker-k8s-pipeline
     app.kubernetes.io/component: api
 spec:
-  storageClassName: nfs-client
+  storageClassName: shared-hosting-storage
   accessModes:
     - ReadWriteMany
   resources:
