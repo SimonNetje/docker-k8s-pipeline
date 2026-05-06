@@ -1,10 +1,23 @@
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+FROM python:3.12-slim
 
-WORKDIR /usr/share/nginx/html
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DATA_DIR=/data
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY public/ ./
+WORKDIR /app
+
+RUN addgroup --system app && adduser --system --ingroup app app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/ ./backend/
+COPY public/ ./public/
+
+RUN mkdir -p /data && chown -R app:app /app /data
+
+USER app
 
 EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]

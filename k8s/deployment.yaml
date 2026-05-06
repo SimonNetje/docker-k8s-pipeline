@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: docker-k8s-pipeline
     app.kubernetes.io/component: web
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: docker-k8s-pipeline
@@ -21,14 +21,36 @@ spec:
         - name: docker-k8s-pipeline
           image: docker.io/simonnetje/docker-k8s-pipeline:56e70441692ef43342295696330342531f8e50da
           imagePullPolicy: IfNotPresent
+          env:
+            - name: DATA_DIR
+              value: /data
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          volumeMounts:
+            - name: app-data
+              mountPath: /data
           resources:
             requests:
               cpu: 50m
-              memory: 64Mi
+              memory: 128Mi
             limits:
               cpu: 250m
-              memory: 128Mi
+              memory: 256Mi
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: docker-k8s-pipeline-data

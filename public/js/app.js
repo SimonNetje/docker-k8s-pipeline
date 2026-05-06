@@ -572,8 +572,40 @@ function renderNav() {
 
 // ── Auth actions ──────────────────────────────────
 function logout() {
-  clearAuth();
-  navigate('index.html', function() { showToast(t('toast_signed_out')); });
+  var done = function() {
+    clearAuth();
+    navigate('index.html', function() { showToast(t('toast_signed_out')); });
+  };
+  if (window.Api) Api.logout().then(done).catch(done);
+  else done();
+}
+
+function handleLogin() {
+  var email = (document.getElementById('login-email').value || '').trim();
+  var password = document.getElementById('login-pass').value || '';
+  if (!email) { showToast(t('toast_email_required')); return; }
+  if (!password) { showToast(t('toast_password_required')); return; }
+  Api.login(email, password)
+    .then(function(result) {
+      setAuth(result.token, result.user);
+      window.location.href = 'dashboard.html';
+    })
+    .catch(function(err) { showToast(err.message || 'Sign in failed'); });
+}
+
+function handleRegister() {
+  var name = (document.getElementById('register-name').value || '').trim();
+  var email = (document.getElementById('register-email').value || '').trim();
+  var password = document.getElementById('register-pass').value || '';
+  if (!name) { showToast(t('toast_name_required')); return; }
+  if (!email) { showToast(t('toast_email_required')); return; }
+  if (password.length < 8) { showToast(t('toast_password_min')); return; }
+  Api.register(name, email, password)
+    .then(function(result) {
+      setAuth(result.token, result.user);
+      window.location.href = 'dashboard.html';
+    })
+    .catch(function(err) { showToast(err.message || 'Account creation failed'); });
 }
 
 // ── Page transitions ──────────────────────────────

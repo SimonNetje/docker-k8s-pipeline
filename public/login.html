@@ -68,7 +68,7 @@
         <label class="form-label" data-i18n="login_password_label">Password</label>
         <input class="form-input" type="password" placeholder="........" id="login-pass" data-i18n-placeholder="login_password_placeholder" />
       </div>
-      <button class="form-submit" type="button" onclick="localStorage.setItem('ph_token','demo-session');localStorage.setItem('ph_user',JSON.stringify({id:'demo-user',name:'Demo User',email:'demo@concreto.run'}));window.location.href='dashboard.html';return false;" data-i18n="login_submit">Sign in</button>
+      <button class="form-submit" type="button" onclick="handleLogin();return false;" data-i18n="login_submit">Sign in</button>
       <div class="auth-divider" data-i18n="login_or">or</div>
       <div class="auth-link">
         <span data-i18n="login_no_account">Don't have an account?</span> <a href="register.html" data-nav data-i18n="login_create_one">Create one</a>
@@ -96,6 +96,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="js/api.js"></script>
 <script src="js/app.js?v=frontend-demo-2"></script>
 </body>
 </html>

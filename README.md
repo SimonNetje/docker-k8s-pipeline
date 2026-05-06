@@ -1,12 +1,12 @@
 # docker-k8s-pipeline
 
-This repository contains the static Concreto frontend packaged as a Docker image, with Kubernetes manifests prepared for a GitOps deployment flow with ArgoCD.
+This repository contains the Concreto frontend and FastAPI backend packaged as one Docker image, with Kubernetes manifests prepared for a GitOps deployment flow with ArgoCD.
 
 ## Application type
 
-The application is packaged as a static HTTP service using an unprivileged NGINX container on port `8080`. Static site files live in `public/`.
+The application is packaged as a FastAPI service on port `8080`. Static site files live in `public/`, and the API lives under `/api`.
 
-The original Concreto frontend repository also contains a backend. This repository currently deploys only the static frontend; API/auth routes require a backend deployment to be added separately.
+The backend currently supports account registration, login/logout, authenticated dashboard application records, and deployment history. It uses SQLite by default at `/data/concreto.db` and can be pointed at another SQL database with `DATABASE_URL`.
 
 ## Required GitHub secrets
 
@@ -30,6 +30,9 @@ After the image is pushed, the workflow updates `k8s/deployment.yaml` to use the
 
 The manifests in `k8s/` define:
 
-- a `Deployment` with 2 replicas, labels/selectors, port `8080`, and basic resource requests/limits.
+- a `Deployment` with 1 replica, labels/selectors, port `8080`, health probes, and basic resource requests/limits.
 - a `ClusterIP` `Service` exposing port `8080` inside the cluster.
 - an `Ingress` routing HTTP traffic to the service. Replace `docker-k8s-pipeline.example.com` in `k8s/ingress.yaml` with the real domain before deploying publicly.
+- a `PersistentVolumeClaim` mounted at `/data` for the default SQLite database.
+
+The deployment runs one replica by default because SQLite is file-based. If you move to PostgreSQL or another shared database through `DATABASE_URL`, you can scale replicas safely.

@@ -1,59 +1,52 @@
 var DemoData = (function() {
-  function demoResponse(value) {
-    return Promise.resolve(value);
-  }
-
-  function requireDemoAuth() {
+  function requireAuth() {
     if (isLoggedIn()) return null;
-    var err = new Error('Demo session expired');
+    var err = new Error('Session expired');
     err.status = 401;
     return err;
   }
 
   function getApplications() {
-    var err = requireDemoAuth();
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    return demoResponse(State.getApps());
+    return Api.getApplications();
   }
 
   function createApplication(data) {
-    var err = requireDemoAuth();
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    return demoResponse(State.addApp(data.name, data.source));
+    return Api.createApplication(data);
   }
 
   function getDeployments() {
-    var err = requireDemoAuth();
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    return demoResponse(State.getDeps());
+    return Api.getDeployments();
   }
 
   function createDeployment(appId) {
-    var err = requireDemoAuth();
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    return demoResponse(State.addDeployment(appId));
+    return Api.createDeployment(appId);
   }
 
   function getDeployment(id) {
-    var err = requireDemoAuth();
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    var deps = State.getDeps();
-    for (var i = 0; i < deps.length; i++) {
-      if (deps[i].id === id) return demoResponse(deps[i]);
-    }
-    var notFound = new Error('Deployment not found');
-    notFound.status = 404;
-    return Promise.reject(notFound);
+    return Api.getDeployments().then(function(deps) {
+      for (var i = 0; i < deps.length; i++) {
+        if (String(deps[i].id) === String(id)) return deps[i];
+      }
+      var notFound = new Error('Deployment not found');
+      notFound.status = 404;
+      throw notFound;
+    });
   }
 
-  function updateDeploymentStatus(id, status) {
-    var err = requireDemoAuth();
+  function updateDeploymentStatus(id, status, logs) {
+    var err = requireAuth();
     if (err) return Promise.reject(err);
-    var dep = State.updateDeployment(id, { status: status });
-    if (dep) return demoResponse(dep);
-    var notFound = new Error('Deployment not found');
-    notFound.status = 404;
-    return Promise.reject(notFound);
+    return Api.updateDeploymentStatus(id, status, logs);
   }
 
   return {

@@ -187,7 +187,7 @@ function simulateDeploy(dep) {
 
   function tick() {
     if (step >= DEPLOY_STEPS.length) {
-      DemoData.updateDeploymentStatus(depId, 'running').then(function() {
+      DemoData.updateDeploymentStatus(depId, 'running', _simState[depId].logs).then(function() {
         delete _simState[depId];
         renderDeployments();
         renderApplications();
@@ -197,6 +197,7 @@ function simulateDeploy(dep) {
     var s = DEPLOY_STEPS[step];
     _simState[depId].status = s.status;
     _simState[depId].logs = (_simState[depId].logs || []).concat([s.log]);
+    DemoData.updateDeploymentStatus(depId, s.status, _simState[depId].logs).catch(function() {});
 
     updateDeployProgress(s.pct, s.log, s.status);
     if (activeView === 'applications') renderApplications();
