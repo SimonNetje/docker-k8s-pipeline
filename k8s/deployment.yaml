@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: docker-k8s-pipeline
-          image: docker.io/simonnetje/docker-k8s-pipeline:c6e8c4095f77bc7730632b2455c09704b10c76b9
+          image: docker.io/simonnetje/docker-k8s-pipeline:39d494cdb025cf12a09667ba9b33104e3522058f
           imagePullPolicy: IfNotPresent
           env:
             - name: DATA_DIR
